@@ -77,8 +77,16 @@ int main() {
 	val2 = fopen("/sys/class/gpio/gpio66/value", "w");
 	fseek(val2, 0, SEEK_SET); 
 	musRun = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/period", "w");
+	// set duty 
+	FILE *musDuty = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/duty", "w");
+	fprintf(musDuty, "%d", 100000);
+	fflush(musDuty); 
+	// set run 
+	FILE *musEnable = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/run", "w");
+	fprintf(musEnable, "%d", 1); 
+	fflush(musEnable); 
 	int count = 0; 
-
+	int count2 = 0; 
 	//Blinks the LED
 	while(1) {
 		switch(count) {
@@ -138,15 +146,33 @@ int main() {
 		fflush(val);
 		fflush(val1);
 		fflush(val2);
-      		usleep(300000);
+		if(count2 == 0) {
+      			usleep(300000);
+		} else if (count2 == 1) {
+			usleep(150000);
+		} else {
+			usleep(75000);
+		} 
 		if(7 == count) {
 			count = 0;
+			count2++;
 		} else {
 			count++;
 		}
+		if(count2 == 6) {
+			break;
+		} 
 	}
 
    // close all files
+	fprintf(musEnable, "%d", 0);
+	fprintf(val, "%d", 0);
+	fprintf(val1, "%d", 0);
+	fprintf(val2, "%d", 0); 
+	fflush(musRun); 
+	fflush(val);
+	fflush(val1);
+	fflush(val2);
 	fclose(sys);
 	fclose(dir);
 	fclose(dir1);
@@ -154,5 +180,9 @@ int main() {
 	fclose(val);
 	fclose(val1);
 	fclose(val2);
+	fclose(pwmSet);
+	fclose(musRun);
+	fclose(musEnable);
+	fclose(musDuty); 
 	return 0;
 }

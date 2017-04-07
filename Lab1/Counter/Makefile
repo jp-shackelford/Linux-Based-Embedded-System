@@ -1,12 +1,12 @@
 # Makefile for GPIO User Space
 
 CC=arm-linux-gnueabihf-gcc
-SOURCES= blinky.c
-EXECUTABLE = blinky
+SOURCES= music.c
+EXECUTABLE = music
 
-blinky: blinky.c
-	$(CC) -o blinky blinky.c
-
+music: music.c
+	$(CC) -o music music.c
+	 
 .PHONY: clean
 
 clean:

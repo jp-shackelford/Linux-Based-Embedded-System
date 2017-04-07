@@ -1,9 +1,5 @@
-/*	blinky.c
- * Adrian Prananda Lincong Li
- * 30 / Sept / 2015
- *
- *	Blinks and external LED from gpio0[8] = x70 pin 27
- */
+/* Music.C, uses GPIO pins to drive LEDS to counter up to 7 and binary
+as well drive pwm to output series of musical notes*/ 
 
 #include <stdio.h>      // for File IO and printf
 #include <time.h>       // for usleep
@@ -20,54 +16,39 @@ int main() {
 
 	// Specifies the file that the pointer will be used for (w = //write)
 	sys = fopen("/sys/class/gpio/export", "w");
-
-	// setup for PWM
+	fseek(sys, 0, SEEK_SET);
+	// init two folders for PWM pins
    	pwmSet = fopen("/sys/devices/bone_capemgr.9/slots", "w"); 
+	if(!pwmSet) printf("pwmSet Broke"); 
 	fprintf(pwmSet, "%s", "am33xx_pwm");
 	fflush(pwmSet); 
 	fprintf(pwmSet, "%s", "bone_pwm_P9_14");
 	fflush(pwmSet);
 	fprintf(pwmSet, "%s", "bone_pwm_P8_19"); 
 	fflush(pwmSet); 
-   // int fseek(FILE *stream, long int offset, int whence)
-   // 	sets the file position of the stream to the given offset.
-   //		Whence has the following constants:
-   //			SEEK_SET = Beginning of file
-   //			SEEK_CUR = Current position of the file pointer
-   //			SEEK_END = End of file
-   //
-   //		In this instance fseek is not necessarily needed.
-	fseek(sys, 0, SEEK_SET);
-	
-	// prints value inside quotes into given file.
-	// %d means it will print some variable as a decimal.
-	// GPIO_PIN is the variable refered to by %d.
+
+	// init specific GPIO pin folders 
 	fprintf(sys, "%d", GPIO_PIN_0);
 	fflush(sys);
 	fprintf(sys, "%d", GPIO_PIN_1);
 	fflush(sys);
 	fprintf(sys, "%d", GPIO_PIN_2); 
-	// Clears the FILE stream for sys file object.
 	fflush(sys);
 
-	//Set the gpio to output
+	//Set the gpios to output
+	FILE *dir1, *dir2, *val1, *val2, *musRun;
 	dir = fopen("/sys/class/gpio/gpio45/direction", "w");
 	fseek(dir, 0, SEEK_SET);
 	fprintf(dir, "%s", "out");
 	fflush(dir);
-	
-	FILE *dir1, *dir2, *val1, *val2, *musRun; 
-	
 	dir1 = fopen("/sys/class/gpio/gpio69/direction", "w");
 	fseek(dir1, 0, SEEK_SET);
 	fprintf(dir1, "%s", "out");
 	fflush(dir1);
-	
 	dir2 = fopen("/sys/class/gpio/gpio66/direction", "w");
 	fseek(dir2, 0, SEEK_SET);
 	fprintf(dir2, "%s", "out");
 	fflush(dir2);
-	
 
 	//Opens the file that controls if the pin is high or low
 	val = fopen("/sys/class/gpio/gpio45/value", "w");
@@ -76,18 +57,29 @@ int main() {
 	fseek(val1, 0, SEEK_SET);
 	val2 = fopen("/sys/class/gpio/gpio66/value", "w");
 	fseek(val2, 0, SEEK_SET); 
+
+	// due to time constraints of creating PWM folders, a delay
+	// must occur in order to give time for the folders to generate
+	usleep(300000);
+	
+	// set period pointer 
 	musRun = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/period", "w");
-	// set duty 
+	if(!musRun) printf("musRun broke\n");
+	// set duty pointer 
 	FILE *musDuty = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/duty", "w");
+	if(!musDuty) printf("musDuty broke\n");
 	fprintf(musDuty, "%d", 100000);
 	fflush(musDuty); 
-	// set run 
+	// set run/enable pointer 
 	FILE *musEnable = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/run", "w");
+	if(!musEnable) printf("musEnable broke\n"); 
 	fprintf(musEnable, "%d", 1); 
 	fflush(musEnable); 
+	
+	// used for loop logic 
 	int count = 0; 
 	int count2 = 0; 
-	//Blinks the LED
+	//Blinks the LED and steps through notes 
 	while(1) {
 		switch(count) {
 			case 0:

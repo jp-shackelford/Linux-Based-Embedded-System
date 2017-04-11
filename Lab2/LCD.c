@@ -8,31 +8,17 @@
 
 #include <stdio.h>      // for File IO and printf
 #include <time.h>       // for usleep
-
-#define RS  48
-#define RW  49
-#define E   117
-#define DB0 115
-#define DB1 20
-#define DB2 60
-#define DB3 112
-#define DB4 66
-#define DB5 69
-#define DB6 45
-#define DB7 47
+#include "LCD.h"
 
 int main() {
-
-	FILE *sys, *dir, *val;
+	
 	// Array of values for each GPIO used 
 	int[] GPIO = {RS, RW, E, DBO, DB1, DB2, DB3, DB4, DB5, DB6, DB7};
 	
 	// Specifies BB's file to initialize GPIO folders 
-	sys = fopen("/sys/class/gpio/export", "w");
-	fseek(sys, 0, SEEK_SET);
+	FILE* sys = fopen("/sys/class/gpio/export", "w");
 	
-	// Writing to export to generate GPIO folders for each
-	// GPIO used
+	// Writing to BB's export file -> generates folders for each GPIO
 	int i; 
 	for(i = 0; i < 11; i++) {
 		fprintf(sys, "%d", GPIO[i]);

@@ -28,7 +28,7 @@ int main() {
 	fclose(db2Val);
 	fclose(db1Val);
 	fclose(db0Val);
-	
+
 	return 0;
 }
 
@@ -37,9 +37,10 @@ int main() {
 int init() {
 
 	// Array of each GPIO pin number
-	int[11] GPIO = {RS, RW, E, DBO, DB1, DB2, DB3, DB4, DB5, DB6, DB7};
+	int GPIO[11] = {RS, RW, E, DB0, DB1, DB2, DB3, DB4, DB5, DB6, DB7};
 
 	sys = fopen("/sys/class/gpio/export", "w");
+	while(!sys) {}
 	fseek(sys, 0, SEEK_SET);
 	
 	
@@ -53,7 +54,6 @@ int init() {
 		fflush(sys);  	
 
 		sprintf(dirStr,"%s%d%s","/sys/class/gpio/gpio",GPIO[i],"/direction");
-		sprintf(valStr,"%s%d%s","/sys/class/gpio/gpio",GPIO[i],"/value");
 
 		dir = fopen(dirStr, "w");
 		while(!dir) {} // Wait in loop until dir gets initialized
@@ -65,30 +65,39 @@ int init() {
 
 	// Files for putting values onto the GPIO pins
 	rsVal = fopen(RS_VALUE, "w");
+	while(!rsVal) {}
 	fseek(rsVal, 0, SEEK_SET);
 	rwVal = fopen(RW_VALUE, "w");
+	while(!rwVal) {}
 	fseek(rwVal, 0, SEEK_SET);
 	enVal = fopen(E_VALUE, "w");
+	while(!enVal) {}
 	fseek(enVal, 0, SEEK_SET);
 	db7Val = fopen(DB7_VALUE, "w");
+	while(!db7Val) {}
 	fseek(db7Val, 0, SEEK_SET);
 	db6Val = fopen(DB6_VALUE, "w");
+	while(!db6Val) {}
 	fseek(db6Val, 0, SEEK_SET);
 	db5Val = fopen(DB5_VALUE, "w");
+	while(!db5Val) {}
 	fseek(db5Val, 0, SEEK_SET);
 	db4Val = fopen(DB4_VALUE, "w");
+	while(!db4Val) {}
 	fseek(db4Val, 0, SEEK_SET);
 	db3Val = fopen(DB3_VALUE, "w");
+	while(!db3Val) {}
 	fseek(db3Val, 0, SEEK_SET);
 	db2Val = fopen(DB2_VALUE, "w");
+	while(!db2Val) {}
 	fseek(db2Val, 0, SEEK_SET);
 	db1Val = fopen(DB1_VALUE, "w");
+	while(!db1Val) {}
 	fseek(db1Val, 0, SEEK_SET);
 	db0Val = fopen(DB0_VALUE, "w");
+	while(!db0Val) {}
 	fseek(db0Val, 0, SEEK_SET);
 
-	// fprintf(val, "%d", 1);
-	// fflush(val)
 
 	/* INITIALIZE LCD DISPLAY */
 	usleep(30000); // Wait >15ms
@@ -97,16 +106,16 @@ int init() {
 	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(150); // Wait > 100us
 	command(0,0,0,0,1,1,0,0,0,0);
-	command(0,0,0,0,1,1,N,F,0,0);
+	command(0,0,0,0,1,1,0,0,0,0); // 1-line display, 5x7 font
 	command(0,0,0,0,0,0,1,0,0,0);
 	command(0,0,0,0,0,0,0,0,0,1);
-	command(0,0,0,0,0,0,0,1,ID,S);
-	command(0,0,0,0,0,0,1,1,C,B);
+	command(0,0,0,0,0,0,0,1,1,0); // Increment mode, no shift
+	command(0,0,0,0,0,0,1,1,1,0); // Cursor on, blink off
 
 	return 0;
 }
 
-void command(int rs,int rw,int d7,int d6,int d5,int d4,int d3,int d2,int d1,int d0) {
+int command(int rs,int rw,int d7,int d6,int d5,int d4,int d3,int d2,int d1,int d0) {
 	
 	// Write in values for each pin
 	fprintf(rsVal, "%d", rs);
@@ -134,6 +143,8 @@ void command(int rs,int rw,int d7,int d6,int d5,int d4,int d3,int d2,int d1,int 
 	enVal = 1;
 	usleep(10);
 	enVal = 0;
+
+	return 0;
 }
 
 

@@ -24,8 +24,8 @@
 #define db7Valp "/sys/class/gpio47/value"
 
   FILE *a[10];
-  FILE *eVal = getStream(eValp, "w"); 
-  int c = 1;   
+  FILE *eVal; 
+  int flag = 1; 
   FILE* getStream(char *path, char *mode) {
 	while(!fopen(path, mode)) {
 		usleep(1); 	
@@ -36,8 +36,8 @@
   // combines fprintf and flush into one function
   // call this to clean up the code a bit 
   void writeToStream(FILE* stream, char *type, char *value) {
-  	fprintf(stream, type, value);
-	fflush(stream); 
+  		fprintf(stream, type, value);
+		fflush(stream); 
   }
 
   void init_command() {
@@ -51,25 +51,27 @@
 	a[7] = getStream(db5Valp, "w");
 	a[8] = getStream(db6Valp, "w");
 	a[9] = getStream(db7Valp, "w");
-	c = 0; 
+	eVal= getStream(eValp, "w"); 
+	flag = 0; 
   }
 
-  // command function for LCD. 
-  int command(int b[10]) {
-	if(c) {
+  // command function for LCD.
+  int command(int rs, int r, int db0, int db1, int db2, int db3,
+  			  int db4, int db5, int db6, int db7) {
+	if(flag) {
 		printf("%s", "Need to Initialize Command First"); 
 		return 0; 	
 	}
-	// Write in values for each pin
+	int b[10] = {rs, r, db0, db1, db2, db3, db4, db5, db6, db7}; 
 	int i;
 	for(i = 0; i < 11; i++) {
 		writeToStream(a[i], "%d", b[i]);	
 	}
 
 	// Strobe the enable
-	eVal = 1;
-	usleep(10);
-	eVal = 0;
+	writeToStream(eVal, "%d", 1);
+	usleep(10); // wait 300 >= ns, 10 us is much greater than 300 so delay is met
+	writeToStream(eVal, "%d", 0);
 
 	return 1;
  }

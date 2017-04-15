@@ -33,20 +33,19 @@ int init() {
 
 	}
 
-	init_command(); 
 	/* INITIALIZE LCD DISPLAY */
+	init_command(); 
 	usleep(30000); // Wait >15ms
-	command([0,0,0,0,1,1,0,0,0,0]);
+	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(5000); // Wait >4.1ms
-	command([0,0,0,0,1,1,0,0,0,0]);
+	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(150); // Wait > 100us
-	command([0,0,0,0,1,1,0,0,0,0]);
-	command([0,0,0,0,1,1,0,0,0,0]); // 1-line display, 5x7 font
-	command([0,0,0,0,0,0,1,0,0,0]);
-	command([0,0,0,0,0,0,0,0,0,1]);
-	command([0,0,0,0,0,0,0,1,1,0]); // Increment mode, no shift
-	command([0,0,0,0,0,0,1,1,1,0]); // Cursor on, blink off
-
+	command(0,0,0,0,1,1,0,0,0,0);
+	command(0,0,0,0,1,1,0,0,0,0); // 1-line display, 5x7 font
+	command(0,0,0,0,0,0,1,0,0,0);
+	command(0,0,0,0,0,0,0,0,0,1);
+	command(0,0,0,0,0,0,0,1,1,0); // Increment mode, no shift
+	command(0,0,0,0,0,0,1,1,1,0); // Cursor on, blink off
 	return 0;
 }
 
@@ -56,7 +55,6 @@ int main() {
 	init(); // Initialize LCD display
    	// close all open streams 
 	usleep(1000000000); 
-	fcloseall(); 
 	return 0;
 }
 

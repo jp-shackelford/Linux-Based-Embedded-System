@@ -36,16 +36,21 @@ int init() {
 	/* INITIALIZE LCD DISPLAY */
 	init_command(); 
 	usleep(30000); // Wait >15ms
+	
+	/* int command(int rs, int r, int db0, int db1, int db2, int db3,
+  			  int db4, int db5, int db6, int db7) */ 
 	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(5000); // Wait >4.1ms
 	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(150); // Wait > 100us
 	command(0,0,0,0,1,1,0,0,0,0);
+	usleep(150); 
 	command(0,0,0,0,1,1,0,0,0,0); // 1-line display, 5x7 font
 	command(0,0,0,0,0,0,1,0,0,0);
 	command(0,0,0,0,0,0,0,0,0,1);
 	command(0,0,0,0,0,0,0,1,1,0); // Increment mode, no shift
-	command(0,0,0,0,0,0,1,1,1,0); // Cursor on, blink off
+	command(0,0,0,0,0,0,1,1,1,1); // Cursor on, blink on
+	command()
 	return 0;
 }
 

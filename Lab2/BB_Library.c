@@ -11,17 +11,17 @@
   // will wait for file to be initialized due to BB's timing delays
   // Note: if the path passed in doesn't or will never exist, getStream
   // will loop indefinetly 
-#define rsValp "/sys/class/gpio48/value"
-#define rValp "/sys/class/gpio49/value"
-#define eValp "/sys/class/gpio117/value"
-#define db0Valp "/sys/class/gpio115/value"
-#define db1Valp "/sys/class/gpio20/value"
-#define db2Valp "/sys/class/gpio60/value"
-#define db3Valp "/sys/class/gpio112/value"
-#define db4Valp "/sys/class/gpio66/value"
-#define db5Valp "/sys/class/gpio69/value"
-#define db6Valp "/sys/class/gpio45/value"
-#define db7Valp "/sys/class/gpio47/value"
+#define rsValp "/sys/class/gpio/gpio48/value"
+#define rValp "/sys/class/gpio/gpio49/value"
+#define eValp "/sys/class/gpio/gpio117/value"
+#define db0Valp "/sys/class/gpio/gpio115/value"
+#define db1Valp "/sys/class/gpio/gpio20/value"
+#define db2Valp "/sys/class/gpio/gpio60/value"
+#define db3Valp "/sys/class/gpio/gpio112/value"
+#define db4Valp "/sys/class/gpio/gpio66/value"
+#define db5Valp "/sys/class/gpio/gpio69/value"
+#define db6Valp "/sys/class/gpio/gpio45/value"
+#define db7Valp "/sys/class/gpio/gpio47/value"
 
   FILE *a[10];
   FILE *eVal; 
@@ -56,8 +56,8 @@
   }
 
   // command function for LCD.
-  int command(int rs, int r, int db0, int db1, int db2, int db3,
-  			  int db4, int db5, int db6, int db7) {
+  int command(int rs, int r, int db7, int db6, int db5, int db4,
+  			  int db3, int db2, int db1, int db0) {
 	if(flag) {
 		printf("%s", "Need to Initialize Command First"); 
 		return 0; 	

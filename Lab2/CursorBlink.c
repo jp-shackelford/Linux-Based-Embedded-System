@@ -43,15 +43,14 @@ int init() {
 	command(0,0,0,0,1,1,0,0,0,0);
 	usleep(5000); // Wait >4.1ms
 	command(0,0,0,0,1,1,0,0,0,0);
-	usleep(5000); // Wait > 100us
+	usleep(170); // Wait > 100us
 	command(0,0,0,0,1,1,0,0,0,0);
-	usleep(5000); 
+	usleep(170); 
 	// END BOOT UP COMMANDS
 
 	command(0,0,0,0,1,1,0,0,0,0); // set 8-bit/2line
-	command(0,0,0,0,0,0,1,1,1,1); // Turn on display, cursor, and blink
-	command(0,0,0,0,0,0,0,1,1,0); // set mode to increment 
-	command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
+	command(0,0,0,0,0,0,1,1,1,0); // Turn on display and cursor 
+	command(0,0,0,0,0,0,0,1,1,0); // set mode to increment and shift to right
 	return 0;
 }
 
@@ -60,6 +59,7 @@ int main() {
 	
 	init(); // Initialize LCD display
    	// close all open streams 
+	usleep(1000000000); 
 	return 0;
 }
 

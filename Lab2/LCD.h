@@ -3,7 +3,7 @@
 
 #define RS  48
 #define RW  49
-#define E   117
+#define E   27
 #define DB0 115
 #define DB1 20
 #define DB2 60

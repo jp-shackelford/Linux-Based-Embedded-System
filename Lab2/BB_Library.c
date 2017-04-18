@@ -13,7 +13,7 @@
   // will loop indefinetly 
 #define rsValp "/sys/class/gpio/gpio48/value"
 #define rValp "/sys/class/gpio/gpio49/value"
-#define eValp "/sys/class/gpio/gpio117/value"
+#define eValp "/sys/class/gpio/gpio27/value"
 #define db0Valp "/sys/class/gpio/gpio115/value"
 #define db1Valp "/sys/class/gpio/gpio20/value"
 #define db2Valp "/sys/class/gpio/gpio60/value"
@@ -51,7 +51,8 @@
 	a[7] = getStream(db5Valp, "w");
 	a[8] = getStream(db6Valp, "w");
 	a[9] = getStream(db7Valp, "w");
-	eVal= getStream(eValp, "w"); 
+	eVal= getStream(eValp, "w");
+	writeToStream(eVal, "%d", 0); 
 	flag = 0; 
   }
 
@@ -70,8 +71,9 @@
 
 	// Strobe the enable
 	writeToStream(eVal, "%d", 1);
-	usleep(10); // wait 300 >= ns, 10 us is much greater than 300 so delay is met
+	usleep(100); // wait 300 >= ns, 10 us is much greater than 300 so delay is met
 	writeToStream(eVal, "%d", 0);
-
+	// wait 60 us for command to settle 
+	usleep(60);
 	return 1;
  }

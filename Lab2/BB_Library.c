@@ -40,7 +40,7 @@
 		fflush(stream); 
   }
 
-  void init_command() {
+  void init_lcd() {
   	a[0] = getStream(rsValp, "w");
 	a[1] = getStream(rValp, "w");
 	a[2] = getStream(db0Valp, "w");
@@ -54,6 +54,19 @@
 	eVal= getStream(eValp, "w");
 	writeToStream(eVal, "%d", 0); 
 	flag = 0; 
+	usleep(30000); // Wait >15ms
+	/* int command(int rs, int r, int db0, int db1, int db2, int db3,
+  			  int db4, int db5, int db6, int db7) */ 
+	// START BOOT UP COMMANDS
+	command(0,0,0,0,1,1,0,0,0,0);
+	usleep(5000); // Wait >4.1ms
+	command(0,0,0,0,1,1,0,0,0,0);
+	usleep(5000); // Wait > 100us
+	command(0,0,0,0,1,1,0,0,0,0);
+	usleep(5000); 
+	// END BOOT UP COMMANDS
+	command(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
+
   }
 
   // command function for LCD.
@@ -77,3 +90,7 @@
 	usleep(60);
 	return 1;
  }
+
+void set_cursor(int p) {
+	return 0; 
+}

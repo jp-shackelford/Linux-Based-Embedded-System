@@ -5,6 +5,7 @@
 #include "LCD.h"
 #include "BB_Library.c" 
 
+
 FILE *sys, *dir; // Files for pin access and direction
 // Create global files for each pin used on the LCD display
 FILE *rsVal, *rwVal, *enVal, *db7Val, *db6Val, *db5Val, 
@@ -34,22 +35,8 @@ int init() {
 	}
 
 	/* INITIALIZE LCD DISPLAY */
-	init_command(); 
-	usleep(30000); // Wait >15ms
-	
-	/* int command(int rs, int r, int db0, int db1, int db2, int db3,
-  			  int db4, int db5, int db6, int db7) */ 
-	// START BOOT UP COMMANDS
-	command(0,0,0,0,1,1,0,0,0,0);
-	usleep(5000); // Wait >4.1ms
-	command(0,0,0,0,1,1,0,0,0,0);
-	usleep(5000); // Wait > 100us
-	command(0,0,0,0,1,1,0,0,0,0);
-	usleep(5000); 
-	// END BOOT UP COMMANDS
-
-	command(0,0,0,0,1,1,0,0,0,0); // set 8-bit/2line
-	command(0,0,0,0,0,0,1,1,1,1); // Turn on display, cursor, and blink
+	init_lcd(); 
+	command(0,0,0,0,0,0,1,1,0,0); // Turn on display, cursor, and blink
 	command(0,0,0,0,0,0,0,1,1,0); // set mode to increment 
 	command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
 	return 0;
@@ -58,8 +45,17 @@ int init() {
 
 int main() {
 	
-	init(); // Initialize LCD display
-   	// close all open streams 
+	init(); // Initialize LCD DISPLAY
+	while(1) {
+		command(0,0,1,0,0,0,0,0,0,0);
+		command(0,0,1,0,0,0,0,0,0,1);
+		command(0,0,1,0,0,0,0,0,1,1);
+		command(0,0,1,0,0,0,0,1,0,0);
+		command(0,0,1,0,0,0,0,1,0,1);
+		command(0,0,1,0,0,0,0,1,1,0);
+		command(0,0,1,0,0,0,0,1,1,1);
+		command(0,0,1,0,0,0,1,0,0,0); 
+	}
 	return 0;
 }
 

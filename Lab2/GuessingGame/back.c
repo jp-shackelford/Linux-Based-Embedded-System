@@ -1,3 +1,11 @@
+/* EE 474 - ECKER SPRING 2017
+   front.c and back.c
+   General use of MKFIFO in C
+   Purpose of this and back.c is be run
+   concurrently, the piped ouput of front 
+   will be sent to back. Where back will take
+   it's input and write it to the scren 
+*/
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>

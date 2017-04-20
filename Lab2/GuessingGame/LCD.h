@@ -1,3 +1,7 @@
+/* EE474, ECKER, SPRING17
+ * LCD.h, definitions
+ * for multiple GPIO pinouts. 
+ */ 
 #ifndef LCD_H_
 #define LCD_H_
 

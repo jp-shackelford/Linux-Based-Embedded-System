@@ -81,7 +81,6 @@
 	for(i = 0; i < 11; i++) {
 		writeToStream(a[i], "%d", b[i]);	
 	}
-
 	// Strobe the enable
 	writeToStream(eVal, "%d", 1);
 	usleep(100); // wait 300 >= ns, 10 us is much greater than 300 so delay is met
@@ -91,6 +90,6 @@
 	return 1;
  }
 
-void set_cursor(int p) {
+int set_cursor(int p) {
 	return 0; 
 }

@@ -2,6 +2,10 @@
 
 #include <stdio.h>      // for File IO and printf
 #include <time.h>       // for usleep
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "LCD.h"
 #include "BB_Library.c" 
 
@@ -12,7 +16,6 @@ FILE *rsVal, *rwVal, *enVal, *db7Val, *db6Val, *db5Val,
 	 *db4Val, *db3Val, *db2Val, *db1Val, *db0Val;
 
 int init() {
-
 	// Array of each GPIO pin number
 	int GPIO[11] = {RS, RW, E, DB0, DB1, DB2, DB3, DB4, DB5, DB6, DB7};
 	sys = getStream("/sys/class/gpio/export", "w"); // check BB_Library for implementation 
@@ -33,30 +36,13 @@ int init() {
 		fflush(dir);
 
 	}
-
 	/* INITIALIZE LCD DISPLAY */
 	init_lcd(); 
+	command(0,0,0,0,0,0,0,0,0,1); 
 	command(0,0,0,0,0,0,1,1,0,0); // Turn on display, cursor, and blink
 	command(0,0,0,0,0,0,0,1,1,0); // set mode to increment 
-	//command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
-	return 0;
-}
-
-
-int main() {
+	command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
 	
-	init(); // Initialize LCD DISPLAY
-	while(1) {
-		command(0,0,1,0,0,0,0,0,0,0);
-		command(0,0,1,0,0,0,0,0,0,1);
-		command(0,0,1,0,0,0,0,0,1,1);
-		command(0,0,1,0,0,0,0,1,0,0);
-		command(0,0,1,0,0,0,0,1,0,1);
-		command(0,0,1,0,0,0,0,1,1,0);
-		command(0,0,1,0,0,0,0,1,1,1);
-		command(0,0,1,0,0,0,1,0,0,0); 
-	}
-	return 0;
 }
 
 

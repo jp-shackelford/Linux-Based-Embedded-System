@@ -27,6 +27,16 @@ int* toBits(char key) {
 	return a;
 }
 
+// given a character, will write to cursor on screen
+void writechar(char c) {
+    int * p = toBits(c);
+    int i;
+        for(i = 0; i < 16; i++) {
+            command(1,0,p[7],p[6],p[5],p[4],p[3],p[2],p[1],p[0]); 
+        }
+    close(p);
+}
+
 int test() {
 	char key;
 	int *a;

@@ -15,7 +15,7 @@
 // value paths for GPIO(S)
 #define RS_VALUE "/sys/class/gpio48/value"
 #define RW_VALUE "/sys/class/gpio49/value"
-#define E_VALUE "/sys/class/gpio117/value"
+#define E_VALUE "/sys/class/gpio27/value"
 #define DB0_VALUE "/sys/class/gpio115/value"
 #define DB1_VALUE "/sys/class/gpio20/value"
 #define DB2_VALUE "/sys/class/gpio60/value"
@@ -27,7 +27,7 @@
 // direction paths for GPIO(S)
 #define RS_DIRECTION "/sys/class/gpio48/direction"
 #define RW_DIRECTION "/sys/class/gpio49/direction"
-#define E_DIRECTION "/sys/class/gpio117/direction"
+#define E_DIRECTION "/sys/class/gpio27/direction"
 #define DB0_DIRECTION "/sys/class/gpio115/direction"
 #define DB1_DIRECTION "/sys/class/gpio20/direction"
 #define DB2_DIRECTION "/sys/class/gpio60/direction"

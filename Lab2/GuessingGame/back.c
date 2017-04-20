@@ -13,7 +13,7 @@ int main() {
     /* Grab string to write to LCD */ 
    while(1) {
         int fd; // fifo refrence 
-        char * myfifo = "/tmp/myfifo";
+        char* myfifo = "myfifo";
         char s[17]; 
         mkfifo(myfifo, 0666); // create the FIFO (named pipe), 0666 specifices permissions 
         fd = open(myfifo, O_RDONLY);

@@ -175,3 +175,12 @@ void clear_and_home() {
 	command(0,0,0,0,0,0,0,0,0,1);
 	usleep(16000);
 } 
+
+void writeString(char* s) {
+	clear_and_home(); 
+	int i = 0;
+	while(s[i] != '\n') {
+		writechar(s[i]);
+		i++; 
+	}
+}

@@ -12,7 +12,7 @@ int main() {
     	//Grab 16 characters from user 
     	fgets(s, sizeof(s)/sizeof(s[0]), stdin);
     	int fd;
-        char * myfifo = "/tmp/myfifo";
+        char * myfifo = "myfifo";
         /* create the FIFO (named pipe) */
         mkfifo(myfifo, 0666);
         /* write "Hi" to the FIFO */

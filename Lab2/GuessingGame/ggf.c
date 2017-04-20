@@ -6,18 +6,18 @@
 #include <fcntl.h>
 #include "BB_Library.c"
 int main() {
-    char s[16];
+    char s[1024]; 
     while(1) {
     	printf("enter 16 characters to get printed:\n"); 
     	//Grab 16 characters from user 
-    	scanf("%s", s);
+    	fgets(s, sizeof(s)/sizeof(s[0]), stdin);
     	int fd;
-        char * myfifo = "/tmp/myfifo";
+        char * myfifo = "myfifo";
         /* create the FIFO (named pipe) */
         mkfifo(myfifo, 0666);
         /* write "Hi" to the FIFO */
         fd = open(myfifo, O_WRONLY); 
-        write(fd, s, sizeof(s));
+        write(fd, s, sizeof(s[0]) * 1024);
         close(fd);
         /* remove the FIFO */
         unlink(myfifo);

@@ -86,7 +86,7 @@
 	usleep(100); // wait 300 >= ns, 10 us is much greater than 300 so delay is met
 	writeToStream(eVal, "%d", 0);
 	// wait 60 us for command to settle 
-	usleep(60);
+	usleep(1000);
 	return 1;
  }
 

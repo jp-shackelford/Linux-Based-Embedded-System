@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include "LCD_init.c"
+#include "toBits.c"
 int main() {
     // initialize LCD to home with set cursor
     init(); 
@@ -20,5 +21,12 @@ int main() {
     close(fd);
     /* remove the FIFO */
     unlink(myfifo);
+
+    int * p; 
+    int i;
+    for(i = 0; i < 16; i++) {
+        p = toBits(s[i]);
+        command(1,0,p[7],p[6],p[5],p[4],p[3],p[2],p[1],p[0]); 
+    }
 
 }

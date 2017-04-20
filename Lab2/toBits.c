@@ -21,14 +21,13 @@ int* toBits(char key) {
 	for(i = 0; i < 8; i++) {
 		bit = (k % 2);
                 k = k / 10;
-                printf("%d\n", bit);
 		a[i] = bit;
 	}
 
 	return a;
 }
 
-int main() {
+int test() {
 	char key;
 	int *a;
 	scanf(" %c", &key);
@@ -39,5 +38,6 @@ int main() {
         for(j = 0; j < 8; j++) {
                 printf("%d", a[j]);
         }
-
+        printf("\n"); 
+    return 0; 
 }

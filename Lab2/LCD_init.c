@@ -38,11 +38,10 @@ int init() {
 	}
 	/* INITIALIZE LCD DISPLAY */
 	init_lcd(); 
-	command(0,0,0,0,0,0,0,0,0,1); 
+	command(0,0,0,0,0,0,0,0,0,1);
 	command(0,0,0,0,0,0,1,1,0,0); // Turn on display, cursor, and blink
 	command(0,0,0,0,0,0,0,1,1,0); // set mode to increment 
-	command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
-	
+	// command(1,0,0,1,0,0,1,1,0,0); // should just write "L"
 }
 
 

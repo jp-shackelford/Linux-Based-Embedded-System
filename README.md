@@ -1,5 +1,5 @@
 Lab 2 - EE 474
-This lab utilizes the GPIO pins of the BBB in order to drive an
+This lab utilizes the GPIO pins of the BBB in order to drive an <br /> 
 lcd display as well as test for jitter of the GPIO pins.
 
 There are three main stages to this lab

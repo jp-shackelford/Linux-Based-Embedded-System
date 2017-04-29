@@ -4,12 +4,19 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
-#include <linux/gpio.h>
+#include <linux/gpio.h> // For all GPIO functionality
+#include <linux/delay.h> // For msleep
 #include <linux/cdev.h>
 #include <linux/semaphore.h>
 #include <asm/uaccess.h>
 
 #define DEVICE_NAME "lcd"
+#define GPIO_EN 112
+#define GPIO_RW 20
+#define GPIO_RS 115
+#define GPIO_DATA 60
+#define GPIO_RCLK 49
+#define GPIO_SRCLK 48
 
 
 struct fake_device {

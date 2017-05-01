@@ -27,6 +27,7 @@ struct fake_device {
 
 static struct cdev* mcdev;
 static dev_t dev_num;
+static int busy;
 
 static int __init lcd_init(void);
 static void __exit lcd_exit(void);
@@ -48,6 +49,6 @@ static struct file_operations fops = {
    .owner = THIS_MODULE,
    .write = lcd_write,
    .open = lcd_open,
-   .release = lcd_close
+   .close = lcd_close
 };
 #endif

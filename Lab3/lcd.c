@@ -3,7 +3,7 @@
 static int __init lcd_init(void) {
 	
 	int ret = alloc_chrdev_region(&dev_num, 0, 1, DEVICE_NAME);
-	
+
 	if (ret < 0) {
 		printk(KERN_ALERT "lcd: Failed to allocate a major number\n");
 		return ret;
@@ -53,13 +53,13 @@ static void __exit lcd_exit(void) {
 }
 
 static void initialize_lcd() {
-
+	busy = 1; // Prevents writing while initializing
 	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RCLK, GPIO_SRCLK};
 
 	int i;
 	for (i =0; i<6; i++) {
 		gpio_request(gpios[i], "sysfs"); // Request each GPIO that will be used
-		gpio_set_direction(gpios[i], 0); // Set all GPIOs as outputs
+		gpio_set_direction(gpios[i], 0); // Set all GPIOs low and as outputs
 		gpio_export(gpios[i], 1); // Export all GPIOs so they show up in system
 	}
 
@@ -69,30 +69,36 @@ static void initialize_lcd() {
 		udelay(5000);
 	}
 	lcd_write(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
+	busy = 0; // Ready for use
 }
 
 // sends a command to the LCD display
 void write_to_lcd(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	
+	busy = 1; // Indicates that we are currently writing to the LCD
+	
 	int a[8] = {d7, d6, d5, d4, d3, d2, d1, d0}
 	
+	// Shift data through from 7->0
 	for (i=7; i>=0; i--) {
 		gpio_set_value(GPIO_DATA, a[i]);
 		toggleShiftClock();
 	}
 
-	// Flip enable signal for LCD display and latch for shift register
-	gpio_set_value(GPIO_RCLK, 1);
+	// Toggle clocks to put data onto LCD
+	gpio_set_value(GPIO_RCLK, 1); // Flip LCD clock high
 	udelay(40);
-	gpio_set_value(GPIO_SRCLK, 1);
+	gpio_set_value(GPIO_SRCLK, 1); // Store data into shift buffer
 	udelay(40);
 	gpio_set_value(GPIO_SRCLK, 0);
 	udelay(40);
-	gpio_set_value(GPIO_RCLK, 0); 
+	gpio_set_value(GPIO_RCLK, 0); // Push data into LCD with falling edge
 	udelay(40);
+
+	busy = 0; // done writing
 }
 
-// Shifts the data in the shift register. Does not store.
+// Shifts the data one bit in the shift register. Does not store.
 static void toggleShiftClock() {
 	udelay(40);
 	gpio_set_value(GPIO_RCLK, 1);

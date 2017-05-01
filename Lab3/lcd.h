@@ -30,13 +30,24 @@ static dev_t dev_num;
 
 static int __init lcd_init(void);
 static void __exit lcd_exit(void);
-static ssize_t lcd_write();
-static ssize_t lcd_clear();
+static int lcd_open(struct inode*, struct file*);
+static int lcd_close(struct inode*, struct file*);
+static ssize_t lcd_write(struct file*, const char*, size_t);
+
+static void initialize_lcd(void);
+static void toggleShiftClock(void);
+static unsigned int_to_bin (unsigned k);
+static int* toBits(char key);
+
+void write_to_lcd(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0)
+void clear(void);
 
 
+/* operations usable by this file. */
 static struct file_operations fops = {
    .owner = THIS_MODULE,
    .write = lcd_write,
-   .clear = lcd_clear
+   .open = lcd_open,
+   .release = lcd_close
 };
 #endif

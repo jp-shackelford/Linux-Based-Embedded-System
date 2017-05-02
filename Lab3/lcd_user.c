@@ -3,6 +3,8 @@
 int main () {
 	
 	int fd;
+	char* str[100];
+	int length = 0;
 
 	// Open a new LCD module
     fd = open(DEV_FILE, O_WRONLY);
@@ -13,15 +15,9 @@ int main () {
     }
 
     while (1) {
-    	/* IMPLEMENT USER CODE HERE
-    	
-    	.
-
-    	.
-
-    	.
-
-    	*/
+    	str = getInput();
+    	length = strlen(str);
+    	write(fd, str, length);
     }
 
     close(fd); // Close the module
@@ -31,7 +27,6 @@ int main () {
 
 char* getInput() {
     static char inputBuffer[256];
-    int i;
     printf("Enter: ");
     fgets(inputBuffer, 256, stdin);
     printf("\n");

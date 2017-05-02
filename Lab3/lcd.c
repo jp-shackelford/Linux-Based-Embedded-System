@@ -92,14 +92,22 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
 // sends a command to the LCD display
 void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	 // Set Enable Low incase of poor startup
+	printk("test0")
     gpio_set_value(GPIO_EN, 0); // enable
+	printk("test1")
     // set RS and RW
+	printk("test2")
     gpio_set_value(GPIO_RS, rs);
+	printk("test3")
     gpio_set_value(GPIO_RW, r);
     // Updating data for shift register
+	printk("test4")
     shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
+	printk("test5")
     gpio_set_value(GPIO_EN, 1);
+	printk("test6")
     msleep(3); 
+	printk("test7")
     gpio_set_value(GPIO_EN, 0);
 }
 

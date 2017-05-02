@@ -74,33 +74,37 @@ static void initialize_lcd() {
 
 // sends a command to the LCD display
 void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
-	
 	busy = 1; // Indicates that we are currently writing to the LCD
-	
-	int a[8] = {d7, d6, d5, d4, d3, d2, d1, d0};
-	
-	// Shift data through from 7->0
-	int i;
-	for (i=7; i>=0; i--) {
-		gpio_set_value(GPIO_DATA, a[i]);
-		toggleShiftClock();
-	}
-
-	// Toggle clocks to put data onto LCD
-	gpio_set_value(GPIO_RCLK, 1); // Flip LCD clock high
-	msleep(40);
-	gpio_set_value(GPIO_SRCLK, 1); // Store data into shift buffer
-	msleep(40);
+	 // Set Enable Low incase of poor startup
+    gpio_set_value(GPIO_EN, 0); // enable
+    // set RS and RW
 	gpio_set_value(GPIO_RS, rs);
-	msleep(40);
-	gpio_set_value(GPIO_RW, r);
-	msleep(40);
-	gpio_set_value(GPIO_SRCLK, 0);
-	msleep(40);
-	gpio_set_value(GPIO_RCLK, 0); // Push data into LCD with falling edge
-	msleep(40);
-
+    gpio_set_value(GPIO_RW, r);
+    // Updating data for shift register
+    shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
+    gpio_set_value(GPIO_EN, 1);
+    msleep(3); 
+    gpio_set_value(GPIO_EN, 0);
 	busy = 0; // done writing
+}
+
+void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
+    gpio_set_value(GPIO_SRCLK, 0); // latch
+    gpio_set_value(GPIO_RCLK, 0); // clock
+    int datas[8] = {db7, db6, db5, db4, db3, db2, db1, db0};
+    int i;
+    for(i = 0; i < 8; i++) {
+            msleep(10);
+            writeToStream(GPIO_DATA, datas[i]); // data
+            msleep(10);
+            writeToStream(GPIO_RCLK, 1); // clock
+            msleep(10);
+        	writeToStream(GPIO_RCLK, 0); // clock
+    }
+    msleep(10);
+    gpio_set_value(GPIO_SRCLK, 1); 
+    msleep(10);
+    gpio_set_value(GPIO_SRCLK, 0);
 }
 
 // Shifts the data one bit in the shift register. Does not store.

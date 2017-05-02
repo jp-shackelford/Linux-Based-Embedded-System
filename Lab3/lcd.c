@@ -53,7 +53,6 @@ static void __exit lcd_exit(void) {
 }
 
 static void initialize_lcd() {
-	busy = 1; // Prevents writing while initializing
 	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RW, GPIO_RS};
 
 	int i;
@@ -69,7 +68,6 @@ static void initialize_lcd() {
 		msleep(50);
 	}
 	write_to_lcd(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
-	busy = 0; // Ready for use
 }
 
 void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
@@ -93,7 +91,6 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
 
 // sends a command to the LCD display
 void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
-    busy = 1; // Indicates that we are currently writing to the LCD
 	 // Set Enable Low incase of poor startup
     gpio_set_value(GPIO_EN, 0); // enable
     // set RS and RW
@@ -104,7 +101,6 @@ void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2,
     gpio_set_value(GPIO_EN, 1);
     msleep(3); 
     gpio_set_value(GPIO_EN, 0);
-	busy = 0; // done writing
 }
 
 
@@ -124,24 +120,14 @@ void clear() {
 
 
 static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCount, loff_t* cursor) {
-
 	unsigned long ret = 0;
-	
 	printk(KERN_INFO "lcd: writing to device...\n");
 	printk(KERN_INFO "%s", bufSource);
-
-	// Check for invalid cases
-	if (busy) { // If already writing, discard new data
-		printk(KERN_INFO "Busy writing; Throwing away new data");
-	} else { // Not busy
-		// Put data into virtual device
-		ret = copy_from_user(virtual_device.data, bufSource, bufCount);
-
-		clear(); // Clear display on every new write
-		int* d = toBits(virtual_device.data); // Converts character into ascii array
-		write_to_lcd(1, 0, d[7], d[6], d[5], d[4], d[3], d[2], d[1], d[0]);
-	}
-
+	// Put data into virtual device
+	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
+	clear(); // Clear display on every new write
+	int* d = toBits(virtual_device.data); // Converts character into ascii array
+	write_to_lcd(1, 0, d[7], d[6], d[5], d[4], d[3], d[2], d[1], d[0]);
 	return ret;
 }
 

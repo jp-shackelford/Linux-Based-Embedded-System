@@ -36,7 +36,7 @@ static void __exit lcd_exit(void) {
 	cdev_del(mcdev);
 	unregister_chrdev_region(dev_num, 1);
 
-	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RCLK, GPIO_SRCLK};
+	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RS, GPIO_RW};
 
 	clear(); // Clear LCD
 
@@ -54,32 +54,33 @@ static void __exit lcd_exit(void) {
 
 static void initialize_lcd() {
 	busy = 1; // Prevents writing while initializing
-	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RCLK, GPIO_SRCLK};
+	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RW, GPIO_RS};
 
 	int i;
-	for (i =0; i<6; i++) {
+	for (i=0; i<6; i++) {
 		gpio_request(gpios[i], "sysfs"); // Request each GPIO that will be used
-		gpio_set_direction(gpios[i], 0); // Set all GPIOs low and as outputs
+		gpio_direction_output(gpios[i], 0); // Set all GPIOs low and as outputs
 		gpio_export(gpios[i], 1); // Export all GPIOs so they show up in system
 	}
 
-	udelay(30000);
+	msleep(300);
 	for (i = 0; i < 3; i++) {
-		lcd_write(0,0,0,0,1,1,0,0,0,0); // 0x30
-		udelay(5000);
+		write_to_lcd(0,0,0,0,1,1,0,0,0,0); // 0x30
+		msleep(50);
 	}
-	lcd_write(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
+	write_to_lcd(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
 	busy = 0; // Ready for use
 }
 
 // sends a command to the LCD display
-void write_to_lcd(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
+void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	
 	busy = 1; // Indicates that we are currently writing to the LCD
 	
-	int a[8] = {d7, d6, d5, d4, d3, d2, d1, d0}
+	int a[8] = {d7, d6, d5, d4, d3, d2, d1, d0};
 	
 	// Shift data through from 7->0
+	int i;
 	for (i=7; i>=0; i--) {
 		gpio_set_value(GPIO_DATA, a[i]);
 		toggleShiftClock();
@@ -87,24 +88,28 @@ void write_to_lcd(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0
 
 	// Toggle clocks to put data onto LCD
 	gpio_set_value(GPIO_RCLK, 1); // Flip LCD clock high
-	udelay(40);
+	msleep(40);
 	gpio_set_value(GPIO_SRCLK, 1); // Store data into shift buffer
-	udelay(40);
+	msleep(40);
+	gpio_set_value(GPIO_RS, rs);
+	msleep(40);
+	gpio_set_value(GPIO_RW, r);
+	msleep(40);
 	gpio_set_value(GPIO_SRCLK, 0);
-	udelay(40);
+	msleep(40);
 	gpio_set_value(GPIO_RCLK, 0); // Push data into LCD with falling edge
-	udelay(40);
+	msleep(40);
 
 	busy = 0; // done writing
 }
 
 // Shifts the data one bit in the shift register. Does not store.
 static void toggleShiftClock() {
-	udelay(40);
+	msleep(40);
 	gpio_set_value(GPIO_RCLK, 1);
-	udelay(40);
+	msleep(40);
 	gpio_set_value(GPIO_RCLK, 0);
-	udelay(40);
+	msleep(40);
 }
 
 // Clears the LCD display screen
@@ -113,9 +118,8 @@ void clear() {
 }
 
 
-static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCount) {
+static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCount, loff_t* cursor) {
 
-	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RCLK, GPIO_SRCLK};
 	unsigned long ret = 0;
 	
 	printk(KERN_INFO "lcd: writing to device...\n");
@@ -130,7 +134,7 @@ static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCou
 
 		clear(); // Clear display on every new write
 		int* d = toBits(virtual_device.data); // Converts character into ascii array
-		write_to_lcd(d[7], d[6], d[5], d[4], d[3], d[2], d[1], d[0]);
+		write_to_lcd(1, 0, d[7], d[6], d[5], d[4], d[3], d[2], d[1], d[0]);
 	}
 
 	return ret;
@@ -146,8 +150,7 @@ static unsigned int_to_bin (unsigned k) {
 static int* toBits(char key) {
         unsigned k;
         int bit;
-        char exit_key = 'q';
-		static int a[8];	
+	static int a[8];	
         k = int_to_bin((unsigned)key); // get key's ascii code
        //Parses the key's ascii code, diplaying one bit at a time
 	//while( k != NULL && key != exit_key) {
@@ -175,6 +178,7 @@ static int lcd_close(struct inode* inode, struct file *filp) {
 	return 0;
 }
 
-MODULE_LICENSE("GPL");
 module_init(lcd_init);
 module_exit(lcd_exit);
+MODULE_LICENSE("GPL");
+

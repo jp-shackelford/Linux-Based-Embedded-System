@@ -5,7 +5,7 @@ ccflags-y := -std=gnu99
 obj-m += lcd.o
 
 # Kernel Source Directory
-KDIR = /tmp/guest-nca7xt/Desktop/bb-kernel/KERNEL
+KDIR = /tmp/guest-0jdhhc/bb-kernel/KERNEL
 PWD = $(shell pwd)
 
 default:

@@ -23,9 +23,6 @@ __attribute__((section("__versions"))) = {
 	{ 0x12c554f0, "cdev_del" },
 	{ 0xfa2a45e, "__memzero" },
 	{ 0xfbc74f64, "__copy_from_user" },
-	{ 0x82f776b7, "gpio_export" },
-	{ 0xa8f59416, "gpio_direction_output" },
-	{ 0x47229b5c, "gpio_request" },
 	{ 0xea01506a, "cdev_add" },
 	{ 0x6f395f2, "cdev_alloc" },
 	{ 0x29537c9e, "alloc_chrdev_region" },
@@ -44,4 +41,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "8922B57EDADD622D86ED971");
+MODULE_INFO(srcversion, "3E5DE456287B0A67FEC952C");

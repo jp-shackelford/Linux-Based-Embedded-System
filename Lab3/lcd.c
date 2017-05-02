@@ -26,8 +26,8 @@ static int __init lcd_init(void) {
 	sema_init(&virtual_device.sem, 1);
 	msleep(100);
 	// Run initialization code for LCD display
-	initialize_lcd();
-
+	//initialize_lcd();
+	write_to_lcd(1,1,0,0,1,1,0,0,1,1);
 	return 0;
 }
 
@@ -72,13 +72,32 @@ static void initialize_lcd() {
 	busy = 0; // Ready for use
 }
 
+void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
+    gpio_set_value(GPIO_SRCLK, 0); // latch
+    gpio_set_value(GPIO_RCLK, 0); // clock
+    int datas[8] = {db7, db6, db5, db4, db3, db2, db1, db0};
+    int i;
+    for(i = 0; i < 8; i++) {
+            msleep(100);
+            gpio_set_value(GPIO_DATA, datas[i]); // data
+            msleep(100);
+            gpio_set_value(GPIO_RCLK, 1); // clock
+            msleep(100);
+        	gpio_set_value(GPIO_RCLK, 0); // clock
+    }
+    msleep(100);
+    gpio_set_value(GPIO_SRCLK, 1); 
+    msleep(100);
+    gpio_set_value(GPIO_SRCLK, 0);
+}
+
 // sends a command to the LCD display
 void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
-	busy = 1; // Indicates that we are currently writing to the LCD
+    busy = 1; // Indicates that we are currently writing to the LCD
 	 // Set Enable Low incase of poor startup
     gpio_set_value(GPIO_EN, 0); // enable
     // set RS and RW
-	gpio_set_value(GPIO_RS, rs);
+    gpio_set_value(GPIO_RS, rs);
     gpio_set_value(GPIO_RW, r);
     // Updating data for shift register
     shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
@@ -88,24 +107,6 @@ void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2,
 	busy = 0; // done writing
 }
 
-void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
-    gpio_set_value(GPIO_SRCLK, 0); // latch
-    gpio_set_value(GPIO_RCLK, 0); // clock
-    int datas[8] = {db7, db6, db5, db4, db3, db2, db1, db0};
-    int i;
-    for(i = 0; i < 8; i++) {
-            msleep(10);
-            writeToStream(GPIO_DATA, datas[i]); // data
-            msleep(10);
-            writeToStream(GPIO_RCLK, 1); // clock
-            msleep(10);
-        	writeToStream(GPIO_RCLK, 0); // clock
-    }
-    msleep(10);
-    gpio_set_value(GPIO_SRCLK, 1); 
-    msleep(10);
-    gpio_set_value(GPIO_SRCLK, 0);
-}
 
 // Shifts the data one bit in the shift register. Does not store.
 static void toggleShiftClock() {

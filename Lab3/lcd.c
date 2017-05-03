@@ -214,38 +214,3 @@ int lcd_close(struct inode* inode, struct file *filp) {
 module_init(lcd_init);
 module_exit(lcd_exit);
 MODULE_LICENSE("GPL");
-
-// Alex's old version of LCD_write
-/* 
-static ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
-	unsigned long ret = 0;
-	printk(KERN_INFO "lcd: writing to device...\n");
-	
-	// Put data into virtual device
-	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
-	clear(); // Clear the screen
-	
-	//int* a = getString(*bufSource);	
-	//command(a[9], a[8], a[7], a[6], a[5], a[4], a[3], a[2], a[1], a[0]);
-
-	
-	// Get length of input
-	int length = lengthInput(bufSource);
-	printk("got length of: %d\n", length);
-	// Convert the character to its ascii equivalent
-	int* d;	
-	d = toBits(*bufSource);	
-	command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
-	
-
-	/*int i;	
-	for(i=0; i<length; i++) {
-		int* d;
-		d = toBits(*bufSource);
-		printk("%d,%d,%d,%d,%d,%d,%d,%d",d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
-		// Send to screen	
-		command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
-	}
-	return ret;
-} */ 
-

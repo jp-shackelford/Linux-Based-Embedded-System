@@ -1,2 +1,2 @@
-/tmp/guest-0jdhhc/Group6/Lab3/lcd.ko
-/tmp/guest-0jdhhc/Group6/Lab3/lcd.o
+/tmp/guest-u30ezm/Group6/Lab3/lcd.ko
+/tmp/guest-u30ezm/Group6/Lab3/lcd.o

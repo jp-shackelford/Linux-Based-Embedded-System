@@ -13,7 +13,7 @@ int main(void)  {
 		exit(1);
 	}
 	strcpy(write_buf, "1010101010");
-	write(fd,write_buf, sizeof(write_buf);
+	write(fd,write_buf, sizeof(write_buf));
 	printf("done did the write to device file\n");
 	
 	close(fd);

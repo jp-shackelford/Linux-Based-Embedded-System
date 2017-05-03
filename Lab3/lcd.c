@@ -10,8 +10,6 @@ static int __init lcd_init(void) {
 	}
 	printk(KERN_INFO "lcd: major number is %d\n", MAJOR(dev_num));
 	printk(KERN_INFO "Use mknod /dev/%s c %d 0 for device file\n", DEVICE_NAME, MAJOR(dev_num));
-
-
 	mcdev = cdev_alloc();
 	mcdev->ops = &fops;
 	mcdev->owner = THIS_MODULE;
@@ -26,8 +24,8 @@ static int __init lcd_init(void) {
 	sema_init(&virtual_device.sem, 1);
 	msleep(100);
 	// Run initialization code for LCD display
-	//initialize_lcd();
-	write_to_lcd(1,1,0,0,1,1,0,0,1,1);
+	initialize_lcd();
+	printk("got this far\n"); 
 	return 0;
 }
 
@@ -64,10 +62,10 @@ static void initialize_lcd() {
 
 	msleep(300);
 	for (i = 0; i < 3; i++) {
-		write_to_lcd(0,0,0,0,1,1,0,0,0,0); // 0x30
+		command(0,0,0,0,1,1,0,0,0,0); // 0x30
 		msleep(50);
 	}
-	write_to_lcd(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line
+	command(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line */ 
 }
 
 void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
@@ -90,24 +88,24 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
 }
 
 // sends a command to the LCD display
-void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
+void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	 // Set Enable Low incase of poor startup
-	printk("test0")
+    printk("test0\n");
     gpio_set_value(GPIO_EN, 0); // enable
-	printk("test1")
+	printk("test1\n");
     // set RS and RW
-	printk("test2")
+	printk("test2\n");
     gpio_set_value(GPIO_RS, rs);
-	printk("test3")
+	printk("test3\n");
     gpio_set_value(GPIO_RW, r);
     // Updating data for shift register
-	printk("test4")
+	printk("test4\n");
     shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
-	printk("test5")
+	printk("test5\n");
     gpio_set_value(GPIO_EN, 1);
-	printk("test6")
+	printk("test6\n");
     msleep(3); 
-	printk("test7")
+	printk("test7\n");
     gpio_set_value(GPIO_EN, 0);
 }
 
@@ -123,7 +121,7 @@ static void toggleShiftClock() {
 
 // Clears the LCD display screen
 void clear() {
-	write_to_lcd(0,0,0,0,0,0,0,0,0,1);
+	command(0,0,0,0,0,0,0,0,0,1);
 }
 
 
@@ -132,11 +130,25 @@ static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCou
 	printk(KERN_INFO "lcd: writing to device...\n");
 	printk(KERN_INFO "%s", bufSource);
 	// Put data into virtual device
-	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
-	clear(); // Clear display on every new write
-	int* d = toBits(virtual_device.data); // Converts character into ascii array
-	write_to_lcd(1, 0, d[7], d[6], d[5], d[4], d[3], d[2], d[1], d[0]);
-	return ret;
+	printk("Didn't crash yet lul\n");
+	int cnum[10]; // command number array
+	int i;
+	// conversion from char to int
+	for(i = 0; i < 10; i++) {
+		if('1' == bufSource[i]) {
+			cnum[i] = 1;		
+		} else {
+			cnum[i] = 0;		
+		}
+	}
+	/* test for char grabbing 
+	for(i = 0; i < 10; i++) {
+		printk("%d\n", cnum[i]);
+	} */
+	command(cnum[9],cnum[8],cnum[7],cnum[6],
+		cnum[5],cnum[4],cnum[3],cnum[2],
+		cnum[1],cnum[0]);
+	return copy_from_user(virtual_device.data, bufSource, bufCount);
 }
 
 // helper function for toBits

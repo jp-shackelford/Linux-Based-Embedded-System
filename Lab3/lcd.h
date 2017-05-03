@@ -41,9 +41,9 @@ static void toggleShiftClock(void);
 static unsigned int_to_bin (unsigned k);
 static int* toBits(char key);
 
-void write_to_lcd(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
-void shiftData(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
-void clear(void);
+static void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
+static void shiftData(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
+static void clear(void);
 
 
 /* operations usable by this file. */

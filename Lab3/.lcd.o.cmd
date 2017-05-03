@@ -1,9 +1,9 @@
-cmd_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := arm-linux-gnueabihf-gcc -Wp,-MD,/tmp/guest-0jdhhc/Group6/Lab3/.lcd.o.d  -nostdinc -isystem /usr/lib/gcc-cross/arm-linux-gnueabihf/5/include -I/tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include -Iarch/arm/include/generated  -Iinclude -I/tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I/tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi -Iinclude/generated/uapi -include /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-omap2/include -Iarch/arm/plat-omap/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Wno-error=pointer-sign -fno-stack-protector -O2 -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -mthumb -Wa,-mimplicit-it=always -Wa,-mno-warn-deprecated -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -DCC_HAVE_ASM_GOTO -std=gnu99  -DMODULE  -fno-optimize-sibling-calls -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(lcd)"  -D"KBUILD_MODNAME=KBUILD_STR(lcd)" -c -o /tmp/guest-0jdhhc/Group6/Lab3/.tmp_lcd.o /tmp/guest-0jdhhc/Group6/Lab3/lcd.c
+cmd_/tmp/guest-u30ezm/Group6/Lab3/lcd.o := arm-linux-gnueabihf-gcc -Wp,-MD,/tmp/guest-u30ezm/Group6/Lab3/.lcd.o.d  -nostdinc -isystem /usr/lib/gcc-cross/arm-linux-gnueabihf/5/include -I/tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include -Iarch/arm/include/generated  -Iinclude -I/tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I/tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi -Iinclude/generated/uapi -include /tmp/guest-u30ezm/bb-kernel/KERNEL/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-omap2/include -Iarch/arm/plat-omap/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Wno-error=pointer-sign -fno-stack-protector -O2 -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -mthumb -Wa,-mimplicit-it=always -Wa,-mno-warn-deprecated -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -DCC_HAVE_ASM_GOTO -std=gnu99  -DMODULE  -fno-optimize-sibling-calls -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(lcd)"  -D"KBUILD_MODNAME=KBUILD_STR(lcd)" -c -o /tmp/guest-u30ezm/Group6/Lab3/.tmp_lcd.o /tmp/guest-u30ezm/Group6/Lab3/lcd.c
 
-source_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := /tmp/guest-0jdhhc/Group6/Lab3/lcd.c
+source_/tmp/guest-u30ezm/Group6/Lab3/lcd.o := /tmp/guest-u30ezm/Group6/Lab3/lcd.c
 
-deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
-  /tmp/guest-0jdhhc/Group6/Lab3/lcd.h \
+deps_/tmp/guest-u30ezm/Group6/Lab3/lcd.o := \
+  /tmp/guest-u30ezm/Group6/Lab3/lcd.h \
   include/linux/module.h \
     $(wildcard include/config/sysfs.h) \
     $(wildcard include/config/modules.h) \
@@ -29,13 +29,13 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/64bit.h) \
   include/uapi/linux/types.h \
   arch/arm/include/generated/asm/types.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/types.h \
   include/asm-generic/int-ll64.h \
   include/uapi/asm-generic/int-ll64.h \
   arch/arm/include/generated/asm/bitsperlong.h \
   include/asm-generic/bitsperlong.h \
   include/uapi/asm-generic/bitsperlong.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/posix_types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/posix_types.h \
   include/linux/stddef.h \
   include/uapi/linux/stddef.h \
   include/linux/compiler.h \
@@ -49,13 +49,13 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/optimize/inlining.h) \
   include/linux/compiler-gcc5.h \
     $(wildcard include/config/arch/use/builtin/bswap.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/posix_types.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/posix_types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/posix_types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/posix_types.h \
   include/linux/poison.h \
     $(wildcard include/config/illegal/pointer/value.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/const.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/const.h \
   include/linux/stat.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/stat.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/stat.h \
   include/uapi/linux/stat.h \
   include/linux/time.h \
     $(wildcard include/config/arch/uses/gettimeoffset.h) \
@@ -69,22 +69,22 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/symbol/prefix.h) \
   /usr/lib/gcc-cross/arm-linux-gnueabihf/5/include/stdarg.h \
   include/linux/linkage.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/linkage.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/linkage.h \
   include/linux/bitops.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/bitops.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/bitops.h \
   include/linux/irqflags.h \
     $(wildcard include/config/trace/irqflags.h) \
     $(wildcard include/config/irqsoff/tracer.h) \
     $(wildcard include/config/preempt/tracer.h) \
     $(wildcard include/config/trace/irqflags/support.h) \
   include/linux/typecheck.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/irqflags.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/ptrace.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/irqflags.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/ptrace.h \
     $(wildcard include/config/arm/thumb.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/ptrace.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/ptrace.h \
     $(wildcard include/config/cpu/endian/be8.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/hwcap.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/hwcap.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/hwcap.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/hwcap.h \
   include/asm-generic/bitops/non-atomic.h \
   include/asm-generic/bitops/fls64.h \
   include/asm-generic/bitops/sched.h \
@@ -93,13 +93,13 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/asm-generic/bitops/const_hweight.h \
   include/asm-generic/bitops/lock.h \
   include/asm-generic/bitops/le.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/byteorder.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/byteorder.h \
   include/linux/byteorder/little_endian.h \
   include/uapi/linux/byteorder/little_endian.h \
   include/linux/swab.h \
   include/uapi/linux/swab.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/swab.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/swab.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/swab.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/swab.h \
   include/linux/byteorder/generic.h \
   include/asm-generic/bitops/ext2-atomic-setbit.h \
   include/linux/log2.h \
@@ -115,24 +115,24 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/string.h \
     $(wildcard include/config/binary/printf.h) \
   include/uapi/linux/string.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/string.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/string.h \
   include/linux/errno.h \
   include/uapi/linux/errno.h \
   arch/arm/include/generated/asm/errno.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/errno.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/errno-base.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/errno.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/errno-base.h \
   include/uapi/linux/kernel.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/sysinfo.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/div64.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/compiler.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/bug.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/sysinfo.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/div64.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/compiler.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/bug.h \
     $(wildcard include/config/bug.h) \
     $(wildcard include/config/thumb2/kernel.h) \
     $(wildcard include/config/debug/bugverbose.h) \
     $(wildcard include/config/arm/lpae.h) \
   include/asm-generic/bug.h \
     $(wildcard include/config/generic/bug/relative/pointers.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/cache.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/cache.h \
     $(wildcard include/config/arm/l1/cache/shift.h) \
     $(wildcard include/config/aeabi.h) \
   include/linux/seqlock.h \
@@ -149,39 +149,39 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/compat.h) \
     $(wildcard include/config/debug/stack/usage.h) \
   include/linux/bug.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/thread_info.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/thread_info.h \
     $(wildcard include/config/crunch.h) \
     $(wildcard include/config/arm/thumbee.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/fpstate.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/fpstate.h \
     $(wildcard include/config/vfpv3.h) \
     $(wildcard include/config/iwmmxt.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/domain.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/domain.h \
     $(wildcard include/config/io/36.h) \
     $(wildcard include/config/cpu/use/domains.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/barrier.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/barrier.h \
     $(wildcard include/config/cpu/32v6k.h) \
     $(wildcard include/config/cpu/xsc3.h) \
     $(wildcard include/config/cpu/fa526.h) \
     $(wildcard include/config/arch/has/barriers.h) \
     $(wildcard include/config/arm/dma/mem/bufferable.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/outercache.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/outercache.h \
     $(wildcard include/config/outer/cache/sync.h) \
     $(wildcard include/config/outer/cache.h) \
   include/linux/stringify.h \
   include/linux/bottom_half.h \
   include/linux/spinlock_types.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/spinlock_types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/spinlock_types.h \
   include/linux/lockdep.h \
     $(wildcard include/config/lockdep.h) \
     $(wildcard include/config/lock/stat.h) \
     $(wildcard include/config/prove/rcu.h) \
   include/linux/rwlock_types.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/spinlock.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/processor.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/spinlock.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/processor.h \
     $(wildcard include/config/have/hw/breakpoint.h) \
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/arm/errata/754327.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/hw_breakpoint.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/hw_breakpoint.h \
   include/linux/rwlock.h \
   include/linux/spinlock_api_smp.h \
     $(wildcard include/config/inline/spin/lock.h) \
@@ -216,8 +216,8 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/atomic.h \
     $(wildcard include/config/arch/has/atomic/or.h) \
     $(wildcard include/config/generic/atomic64.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/atomic.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/cmpxchg.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/atomic.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/cmpxchg.h \
     $(wildcard include/config/cpu/sa1100.h) \
     $(wildcard include/config/cpu/sa110.h) \
     $(wildcard include/config/cpu/v6.h) \
@@ -275,16 +275,16 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/hugetlb/page.h) \
     $(wildcard include/config/hugetlb/page/size/variable.h) \
   include/generated/bounds.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/page.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/page.h \
     $(wildcard include/config/cpu/copy/v4wt.h) \
     $(wildcard include/config/cpu/copy/v4wb.h) \
     $(wildcard include/config/cpu/copy/feroceon.h) \
     $(wildcard include/config/cpu/copy/fa.h) \
     $(wildcard include/config/cpu/xscale.h) \
     $(wildcard include/config/cpu/copy/v6.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/glue.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/pgtable-2level-types.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/memory.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/glue.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/pgtable-2level-types.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/memory.h \
     $(wildcard include/config/need/mach/memory/h.h) \
     $(wildcard include/config/page/offset.h) \
     $(wildcard include/config/dram/size.h) \
@@ -340,12 +340,12 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/jiffies.h \
   include/linux/timex.h \
   include/uapi/linux/timex.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/param.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/param.h \
   arch/arm/include/generated/asm/param.h \
   include/asm-generic/param.h \
     $(wildcard include/config/hz.h) \
   include/uapi/asm-generic/param.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/timex.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/timex.h \
     $(wildcard include/config/arch/multiplatform.h) \
   arch/arm/mach-omap2/include/mach/timex.h \
   arch/arm/plat-omap/include/plat/timex.h \
@@ -358,17 +358,17 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/use/percpu/numa/node/id.h) \
   include/linux/smp.h \
     $(wildcard include/config/use/generic/smp/helpers.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/smp.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/smp.h \
   include/linux/percpu.h \
     $(wildcard include/config/need/per/cpu/embed/first/chunk.h) \
     $(wildcard include/config/need/per/cpu/page/first/chunk.h) \
     $(wildcard include/config/have/setup/per/cpu/area.h) \
   include/linux/pfn.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/percpu.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/percpu.h \
   include/asm-generic/percpu.h \
   include/linux/percpu-defs.h \
     $(wildcard include/config/debug/force/weak/per/cpu.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/topology.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/topology.h \
     $(wildcard include/config/arm/cpu/topology.h) \
   include/asm-generic/topology.h \
   include/linux/mmdebug.h \
@@ -379,10 +379,10 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/rbtree.h \
   include/uapi/linux/sysctl.h \
   include/linux/elf.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/elf.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/user.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/elf.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/user.h \
   include/uapi/linux/elf.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/elf-em.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/elf-em.h \
   include/linux/kobject.h \
   include/linux/sysfs.h \
   include/linux/kobject_ns.h \
@@ -397,7 +397,7 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/jump/label.h) \
   include/linux/export.h \
     $(wildcard include/config/modversions.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/module.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/module.h \
     $(wildcard include/config/arm/unwind.h) \
   include/asm-generic/module.h \
     $(wildcard include/config/have/mod/arch/specific.h) \
@@ -429,7 +429,7 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/capability.h \
   include/uapi/linux/capability.h \
   include/linux/semaphore.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/fiemap.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/fiemap.h \
   include/linux/shrinker.h \
   include/linux/migrate_mode.h \
   include/linux/percpu-rwsem.h \
@@ -437,15 +437,15 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/blk/cgroup.h) \
     $(wildcard include/config/blk/dev/integrity.h) \
   include/uapi/linux/fs.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/limits.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/ioctl.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/limits.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/ioctl.h \
   arch/arm/include/generated/asm/ioctl.h \
   include/asm-generic/ioctl.h \
   include/uapi/asm-generic/ioctl.h \
   include/linux/quota.h \
     $(wildcard include/config/quota/netlink/interface.h) \
   include/linux/percpu_counter.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/dqblk_xfs.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/dqblk_xfs.h \
   include/linux/dqblk_v1.h \
   include/linux/dqblk_v2.h \
   include/linux/dqblk_qtree.h \
@@ -454,13 +454,13 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/nfs_fs_i.h \
   include/linux/fcntl.h \
   include/uapi/linux/fcntl.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/fcntl.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/fcntl.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/fcntl.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/fcntl.h \
   include/linux/err.h \
   include/linux/gpio.h \
     $(wildcard include/config/generic/gpio.h) \
     $(wildcard include/config/arch/have/custom/gpio/h.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/gpio.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/gpio.h \
     $(wildcard include/config/arch/nr/gpio.h) \
     $(wildcard include/config/need/mach/gpio/h.h) \
   include/asm-generic/gpio.h \
@@ -498,7 +498,7 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/pm/clk.h) \
     $(wildcard include/config/pm/generic/domains.h) \
   include/linux/ratelimit.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/device.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/device.h \
     $(wildcard include/config/dmabounce.h) \
     $(wildcard include/config/iommu/api.h) \
     $(wildcard include/config/arm/dma/use/iommu.h) \
@@ -558,14 +558,14 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/auxvec.h \
   include/uapi/linux/auxvec.h \
   arch/arm/include/generated/asm/auxvec.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/auxvec.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/auxvec.h \
   include/linux/page-debug-flags.h \
     $(wildcard include/config/page/poisoning.h) \
     $(wildcard include/config/page/guard.h) \
     $(wildcard include/config/page/debug/something/else.h) \
   include/linux/uprobes.h \
     $(wildcard include/config/arch/supports/uprobes.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/mmu.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/mmu.h \
     $(wildcard include/config/cpu/has/asid.h) \
   arch/arm/include/generated/asm/cputime.h \
   include/asm-generic/cputime.h \
@@ -574,15 +574,15 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/ipc.h \
   include/uapi/linux/ipc.h \
   arch/arm/include/generated/asm/ipcbuf.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/ipcbuf.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/ipcbuf.h \
   arch/arm/include/generated/asm/sembuf.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/sembuf.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/sembuf.h \
   include/linux/signal.h \
   include/uapi/linux/signal.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/signal.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/signal.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/asm-generic/signal-defs.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/sigcontext.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/signal.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/signal.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/asm-generic/signal-defs.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/sigcontext.h \
   arch/arm/include/generated/asm/siginfo.h \
   include/asm-generic/siginfo.h \
   include/uapi/asm-generic/siginfo.h \
@@ -591,11 +591,11 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
     $(wildcard include/config/seccomp.h) \
     $(wildcard include/config/seccomp/filter.h) \
   include/uapi/linux/seccomp.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/seccomp.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/unistd.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/unistd.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/seccomp.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/unistd.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/unistd.h \
     $(wildcard include/config/oabi/compat.h) \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/uapi/asm/unistd.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/uapi/asm/unistd.h \
   include/linux/rtmutex.h \
     $(wildcard include/config/debug/rt/mutexes.h) \
   include/linux/plist.h \
@@ -620,21 +620,21 @@ deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o := \
   include/linux/llist.h \
     $(wildcard include/config/arch/have/nmi/safe/cmpxchg.h) \
   include/linux/aio.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/include/uapi/linux/aio_abi.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/include/uapi/linux/aio_abi.h \
   include/linux/uio.h \
   include/uapi/linux/uio.h \
   include/uapi/linux/i2c.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/prom.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/prom.h \
   include/linux/pinctrl/pinctrl.h \
   include/linux/seq_file.h \
   include/linux/pinctrl/pinctrl-state.h \
   include/linux/delay.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/delay.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/delay.h \
   include/linux/cdev.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/uaccess.h \
-  /tmp/guest-0jdhhc/bb-kernel/KERNEL/arch/arm/include/asm/unified.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/uaccess.h \
+  /tmp/guest-u30ezm/bb-kernel/KERNEL/arch/arm/include/asm/unified.h \
     $(wildcard include/config/arm/asm/unified.h) \
 
-/tmp/guest-0jdhhc/Group6/Lab3/lcd.o: $(deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o)
+/tmp/guest-u30ezm/Group6/Lab3/lcd.o: $(deps_/tmp/guest-u30ezm/Group6/Lab3/lcd.o)
 
-$(deps_/tmp/guest-0jdhhc/Group6/Lab3/lcd.o):
+$(deps_/tmp/guest-u30ezm/Group6/Lab3/lcd.o):

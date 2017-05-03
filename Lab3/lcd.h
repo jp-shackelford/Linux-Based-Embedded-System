@@ -21,13 +21,14 @@
 
 
 struct fake_device {
-	char data[100];
+	char buff[100]; 
 	struct semaphore sem;
 } virtual_device;
 
 
 static struct cdev* mcdev;
 static dev_t dev_num;
+static int write_data[10]; 
 
 static int __init lcd_init(void);
 static void __exit lcd_exit(void);
@@ -37,12 +38,13 @@ static ssize_t lcd_write(struct file*, const char*, size_t, loff_t*);
 
 static void initialize_lcd(void);
 static void toggleShiftClock(void);
-unsigned int_to_bin (unsigned k);
-int* toBits(char key);
+static unsigned int_to_bin (unsigned k);
+static int* toBits(char key);
 
-static void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
+void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
 static void shiftData(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
-void clear(void);
+static void clear(void);
+static void write_bin(char* nums);
 
 
 /* operations usable by this file. */

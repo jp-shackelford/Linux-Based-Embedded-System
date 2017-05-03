@@ -18,17 +18,17 @@ static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
 	{ 0xae4b0ceb, "module_layout" },
-	{ 0xfbc74f64, "__copy_from_user" },
-	{ 0xfa2a45e, "__memzero" },
-	{ 0xe61a6d2f, "gpio_unexport" },
-	{ 0x7485e15e, "unregister_chrdev_region" },
-	{ 0x12c554f0, "cdev_del" },
 	{ 0x82f776b7, "gpio_export" },
 	{ 0xa8f59416, "gpio_direction_output" },
 	{ 0x47229b5c, "gpio_request" },
 	{ 0xea01506a, "cdev_add" },
 	{ 0x6f395f2, "cdev_alloc" },
 	{ 0x29537c9e, "alloc_chrdev_region" },
+	{ 0xe61a6d2f, "gpio_unexport" },
+	{ 0x7485e15e, "unregister_chrdev_region" },
+	{ 0x12c554f0, "cdev_del" },
+	{ 0xfa2a45e, "__memzero" },
+	{ 0xfbc74f64, "__copy_from_user" },
 	{ 0xf9a482f9, "msleep" },
 	{ 0x432fd7f6, "__gpio_set_value" },
 	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
@@ -44,4 +44,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "799E43DBB6FDCC30B1F6FFA");
+MODULE_INFO(srcversion, "A95B8A823A95CB04B96C90C");

@@ -1,1 +1,1 @@
-cmd_/tmp/guest-u30ezm/Group6/Lab3/lcd.ko := arm-linux-gnueabihf-ld -EL -r  -T /tmp/guest-u30ezm/bb-kernel/KERNEL/scripts/module-common.lds --build-id  -o /tmp/guest-u30ezm/Group6/Lab3/lcd.ko /tmp/guest-u30ezm/Group6/Lab3/lcd.o /tmp/guest-u30ezm/Group6/Lab3/lcd.mod.o
+cmd_/tmp/guest-zdyaye/Group6/Lab3/lcd.ko := arm-linux-gnueabihf-ld -EL -r  -T /tmp/guest-zdyaye/bb-kernel/KERNEL/scripts/module-common.lds --build-id  -o /tmp/guest-zdyaye/Group6/Lab3/lcd.ko /tmp/guest-zdyaye/Group6/Lab3/lcd.o /tmp/guest-zdyaye/Group6/Lab3/lcd.mod.o

@@ -13,13 +13,21 @@ int main(void)  {
 		printf("File %s cannot be opened\n", LCD_DIR);	
 		exit(1);
 	}
-	strcpy(write_buf, "H");
-	write(fd,write_buf, (size_t)sizeof(write_buf), 0);
-	printf("size of write buff = %d\n", sizeof(write_buf));
+	// set what will be written to the file
+	strcpy(write_buf, "1001001100");
+	write(fd, write_buf, 10); 
 	usleep(1000000);
-	strcpy(write_buf, "Z");
-	write(fd,write_buf, (size_t)sizeof(write_buf), 0);
-	printf("size of write buff = %d\n", sizeof(write_buf));
-	close(fd);
+	//clear();
 	return 0;
+}
+
+
+
+char* getInput() {
+	static char input[256];
+	int i;
+	printf("Enter: ");
+	fgets(input, 256, stdin);
+	printf("\n");
+	return input;
 }

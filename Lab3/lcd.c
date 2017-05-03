@@ -49,7 +49,7 @@ static void __exit lcd_exit(void) {
 	printk(KERN_ALERT "lcd: successfully unloaded\n");
 }
 
-static void initialize_lcd() {
+void initialize_lcd() {
 	int gpios[6] = {GPIO_EN, GPIO_RCLK, GPIO_SRCLK, GPIO_DATA, GPIO_RW, GPIO_RS};
 
 	int i;
@@ -91,6 +91,10 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
     gpio_set_value(GPIO_SRCLK, 0);
 }
 
+void write_bin(char* nums) {
+	command(nums[9], nums[8], nums[7], nums[6], nums[5], nums[4], nums[3], nums[2], nums[1], nums[0]);
+}
+
 // sends a command to the LCD display
 void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	 // Set Enable Low incase of poor startup
@@ -107,7 +111,7 @@ void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int 
 
 
 // Shifts the data one bit in the shift register. Does not store.
-static void toggleShiftClock() {
+void toggleShiftClock() {
 	msleep(40);
 	gpio_set_value(GPIO_RCLK, 1);
 	msleep(40);
@@ -125,9 +129,9 @@ unsigned int_to_bin(unsigned k) {
 	return ((k==0 || k==1) ? k : ((k%2) + (10*int_to_bin(k/2))));
 }
 
-int* toBits(char key) {
+ int* toBits(char key) {
 	unsigned k;
-	printk("My key is %c\n", key);
+	printk("My key is: %c\n", key);
 	static int a[8];
 	k = int_to_bin((unsigned)key);
 	printk("This is the int_to_bin: %d\n",k);
@@ -139,28 +143,60 @@ int* toBits(char key) {
 	return a;
 }
 
-static ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
+ int lengthInput(char* input) {
+	int length = 0;
+	char curr = 0;
+	curr = input[length];
+	//printk("input was: %s\n", input);
+	//printk("char is: %c\n", curr);
+	/*while ((int)curr != 0 && (int)curr != 10) { // While not new line char or null
+		length++;		
+		printk("length: %d\n", length);		
+		curr = input[length];
+		printk("char: %c\n", curr);
+	}*/
+	return 1;
+}
+/*
+static int* getString(char* input) {
+	int i;
+	static int out[10];	
+	for(i=0; i<10; i++) {
+		if (input[i]=='1') out[i]=1;
+		else out[i]=0;
+	}
+	printk("string is: %s\n", out);
+	return out;
+}*/
+
+ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
 	unsigned long ret = 0;
 	printk(KERN_INFO "lcd: writing to device...\n");
-	printk(KERN_INFO "%s\n", bufCount);
-	printk(KERN_INFO "%s\n", bufSource);
-	// Put data into virtual device
-	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
-	clear(); // Clear the screen
-	printk("virtual device data is %d\n", virtual_device.data); 
-	// Convert the character to its ascii equivalent
-	int* d;
-	d = toBits(virtual_device.data);
-	printk("%d,%d,%d,%d,%d,%d,%d,%d",d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);	
-
-	command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
-
+	ret = copy_from_user(virtual_device.buff, bufSource, bufCount);
+	char userD[10];
+	copy_from_user(userD, bufSource, 10);
+	int i;
+	for(i = 0; i < 10; i++) {
+		if('1' == userD[i]) {
+			write_data[i] = 1;		
+		} else if('0' == userD[i]) {
+			write_data[i] = 0;		
+		} else {
+			printk("bad input to write\n");
+			return ret; 		
+		}
+	}
+	printk("Current data: %s\n", userD);
+	command(write_data[0],write_data[1],write_data[2],
+		write_data[3],write_data[4],write_data[5],
+		write_data[6],write_data[7],write_data[8],
+		write_data[9]);
 	return ret;
 }
 
 // parses a charter to its ascii equivalent, returns
 // and array for each bit of charactrs ascii 
-static int lcd_open(struct inode *inode, struct file* filp) {
+int lcd_open(struct inode *inode, struct file* filp) {
 	if (down_interruptible(&virtual_device.sem) != 0) {
 		printk(KERN_ALERT "lcd: could not lock device during open\n");
 		return -1;
@@ -169,7 +205,7 @@ static int lcd_open(struct inode *inode, struct file* filp) {
 	return 0;
 }
 
-static int lcd_close(struct inode* inode, struct file *filp) {
+int lcd_close(struct inode* inode, struct file *filp) {
 	up(&virtual_device.sem);
 	printk(KERN_INFO "lcd: closing device\n");
 	return 0;
@@ -178,4 +214,38 @@ static int lcd_close(struct inode* inode, struct file *filp) {
 module_init(lcd_init);
 module_exit(lcd_exit);
 MODULE_LICENSE("GPL");
+
+// Alex's old version of LCD_write
+/* 
+static ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
+	unsigned long ret = 0;
+	printk(KERN_INFO "lcd: writing to device...\n");
+	
+	// Put data into virtual device
+	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
+	clear(); // Clear the screen
+	
+	//int* a = getString(*bufSource);	
+	//command(a[9], a[8], a[7], a[6], a[5], a[4], a[3], a[2], a[1], a[0]);
+
+	
+	// Get length of input
+	int length = lengthInput(bufSource);
+	printk("got length of: %d\n", length);
+	// Convert the character to its ascii equivalent
+	int* d;	
+	d = toBits(*bufSource);	
+	command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
+	
+
+	/*int i;	
+	for(i=0; i<length; i++) {
+		int* d;
+		d = toBits(*bufSource);
+		printk("%d,%d,%d,%d,%d,%d,%d,%d",d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
+		// Send to screen	
+		command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
+	}
+	return ret;
+} */ 
 

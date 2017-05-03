@@ -63,9 +63,11 @@ static void initialize_lcd() {
 	msleep(300);
 	for (i = 0; i < 3; i++) {
 		command(0,0,0,0,1,1,0,0,0,0); // 0x30
-		msleep(50);
+		msleep(6);
 	}
-	command(0,0,0,0,1,1,1,0,0,0); // set 8-bit/2line */ 
+	command(0,0,0,0,1,1,0,0,0,0); // set 8-bit/1line
+	command(0,0,0,0,0,0,1,1,1,0); // turn on display and cursor
+	command(0,0,0,0,0,0,0,1,1,0); // sets cursor and stuf 
 }
 
 void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {
@@ -74,16 +76,16 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
     int datas[8] = {db7, db6, db5, db4, db3, db2, db1, db0};
     int i;
     for(i = 0; i < 8; i++) {
-            msleep(100);
+            msleep(1);
             gpio_set_value(GPIO_DATA, datas[i]); // data
-            msleep(100);
+            msleep(1);
             gpio_set_value(GPIO_RCLK, 1); // clock
-            msleep(100);
+            msleep(1);
         	gpio_set_value(GPIO_RCLK, 0); // clock
     }
-    msleep(100);
+    msleep(1);
     gpio_set_value(GPIO_SRCLK, 1); 
-    msleep(100);
+    msleep(1);
     gpio_set_value(GPIO_SRCLK, 0);
 }
 
@@ -92,20 +94,13 @@ void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int 
 	 // Set Enable Low incase of poor startup
     printk("test0\n");
     gpio_set_value(GPIO_EN, 0); // enable
-	printk("test1\n");
     // set RS and RW
-	printk("test2\n");
     gpio_set_value(GPIO_RS, rs);
-	printk("test3\n");
     gpio_set_value(GPIO_RW, r);
     // Updating data for shift register
-	printk("test4\n");
     shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
-	printk("test5\n");
     gpio_set_value(GPIO_EN, 1);
-	printk("test6\n");
     msleep(3); 
-	printk("test7\n");
     gpio_set_value(GPIO_EN, 0);
 }
 
@@ -134,20 +129,20 @@ static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCou
 	int cnum[10]; // command number array
 	int i;
 	// conversion from char to int
-	for(i = 0; i < 10; i++) {
+	for(i = 0; i < 10; i) {
 		if('1' == bufSource[i]) {
 			cnum[i] = 1;		
 		} else {
 			cnum[i] = 0;		
 		}
 	}
-	/* test for char grabbing 
-	for(i = 0; i < 10; i++) {
-		printk("%d\n", cnum[i]);
-	} */
-	command(cnum[9],cnum[8],cnum[7],cnum[6],
-		cnum[5],cnum[4],cnum[3],cnum[2],
-		cnum[1],cnum[0]);
+	
+	printk("Issuing %d,%d,%d,%d,%d,%d,%d,%d,%d,%d \n", 
+	     cnum[0],cnum[1],cnum[2],cnum[3],cnum[4],cnum[5],
+	     cnum[6],cnum[7],cnum[8],cnum[9]);
+	/* command(cnum[0],cnum[1],cnum[2],cnum[3],
+		cnum[4],cnum[5],cnum[6],cnum[7],
+		cnum[8],cnum[9]); */ 
 	return copy_from_user(virtual_device.data, bufSource, bufCount);
 }
 

@@ -29,13 +29,11 @@ __attribute__((section("__versions"))) = {
 	{ 0x29537c9e, "alloc_chrdev_region" },
 	{ 0xf9a482f9, "msleep" },
 	{ 0x432fd7f6, "__gpio_set_value" },
-	{ 0xfbc74f64, "__copy_from_user" },
-	{ 0xfa2a45e, "__memzero" },
-	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
 	{ 0x695b2cfd, "down_interruptible" },
 	{ 0x2e5810c6, "__aeabi_unwind_cpp_pr1" },
-	{ 0x27e1a049, "printk" },
 	{ 0xc9f5df35, "up" },
+	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
+	{ 0x27e1a049, "printk" },
 };
 
 static const char __module_depends[]
@@ -44,4 +42,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "3AD458D9AA41A0FA5798F79");
+MODULE_INFO(srcversion, "C12BCCF6AAB4EF0ECA8D5C5");

@@ -12,10 +12,9 @@ int main(void)  {
 		printf("File %s cannot be opened\n", LCD_DIR);	
 		exit(1);
 	}
-	strcpy(write_buf, "1010101010");
+	strcpy(write_buf, "1001001100");
 	write(fd,write_buf, sizeof(write_buf));
 	printf("done did the write to device file\n");
-	
 	close(fd);
 	return 0;
 }

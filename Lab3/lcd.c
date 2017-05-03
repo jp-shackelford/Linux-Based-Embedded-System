@@ -78,16 +78,16 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
     int datas[8] = {db7, db6, db5, db4, db3, db2, db1, db0};
     int i;
     for(i = 0; i < 8; i++) {
-            msleep(1);
+            usleep_range(10,100);
             gpio_set_value(GPIO_DATA, datas[i]); // data
-            msleep(1);
+            usleep_range(10,100);
             gpio_set_value(GPIO_RCLK, 1); // clock
-            msleep(1);
+            usleep_range(10,100);
         	gpio_set_value(GPIO_RCLK, 0); // clock
     }
-    msleep(1);
+    usleep_range(10,100);
     gpio_set_value(GPIO_SRCLK, 1); 
-    msleep(1);
+    usleep_range(10,100);
     gpio_set_value(GPIO_SRCLK, 0);
 }
 
@@ -105,19 +105,10 @@ void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int 
     // Updating data for shift register
     shiftData(d7, d6, d5, d4, d3, d2, d1, d0);
     gpio_set_value(GPIO_EN, 1);
-    msleep(3); 
+    usleep_range(10,100); 
     gpio_set_value(GPIO_EN, 0);
 }
 
-
-// Shifts the data one bit in the shift register. Does not store.
-void toggleShiftClock() {
-	msleep(40);
-	gpio_set_value(GPIO_RCLK, 1);
-	msleep(40);
-	gpio_set_value(GPIO_RCLK, 0);
-	msleep(40);
-}
 
 // Clears the LCD display screen
 void clear() {
@@ -147,27 +138,8 @@ unsigned int_to_bin(unsigned k) {
 	int length = 0;
 	char curr = 0;
 	curr = input[length];
-	//printk("input was: %s\n", input);
-	//printk("char is: %c\n", curr);
-	/*while ((int)curr != 0 && (int)curr != 10) { // While not new line char or null
-		length++;		
-		printk("length: %d\n", length);		
-		curr = input[length];
-		printk("char: %c\n", curr);
-	}*/
 	return 1;
 }
-/*
-static int* getString(char* input) {
-	int i;
-	static int out[10];	
-	for(i=0; i<10; i++) {
-		if (input[i]=='1') out[i]=1;
-		else out[i]=0;
-	}
-	printk("string is: %s\n", out);
-	return out;
-}*/
 
 ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
 	unsigned long ret = 0;

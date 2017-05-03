@@ -21,6 +21,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x82f776b7, "gpio_export" },
 	{ 0xa8f59416, "gpio_direction_output" },
 	{ 0x47229b5c, "gpio_request" },
+	{ 0xf9a482f9, "msleep" },
 	{ 0xea01506a, "cdev_add" },
 	{ 0x6f395f2, "cdev_alloc" },
 	{ 0x29537c9e, "alloc_chrdev_region" },
@@ -29,7 +30,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x12c554f0, "cdev_del" },
 	{ 0xfa2a45e, "__memzero" },
 	{ 0xfbc74f64, "__copy_from_user" },
-	{ 0xf9a482f9, "msleep" },
+	{ 0x12a38747, "usleep_range" },
 	{ 0x432fd7f6, "__gpio_set_value" },
 	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
 	{ 0x695b2cfd, "down_interruptible" },
@@ -44,4 +45,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "A95B8A823A95CB04B96C90C");
+MODULE_INFO(srcversion, "B72920C810833DB6B68906F");

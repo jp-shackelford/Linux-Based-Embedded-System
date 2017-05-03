@@ -80,6 +80,10 @@ void clear_and_home() {
 	usleep(16000);
 } 
 
+void home() {
+	command("0000000010");
+}
+
 // writes bottom 16 characters or till newline of a string
 // to the top 16 places on LCD dot matrix 
 void writeString(char* s) {
@@ -95,5 +99,6 @@ int main() {
 	init_lcd_library(); 
 	clear_and_home();
 	writeString("is this real?\n");
+	home();
 	return 0;
 }

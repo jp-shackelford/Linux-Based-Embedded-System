@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
+#include <time.h>
 #define LCD_DIR "/dev/lcd"
 
 int main(void)  {
@@ -12,9 +13,13 @@ int main(void)  {
 		printf("File %s cannot be opened\n", LCD_DIR);	
 		exit(1);
 	}
-	strcpy(write_buf, "1001001100");
-	write(fd,write_buf, sizeof(write_buf));
-	printf("done did the write to device file\n");
+	strcpy(write_buf, "H");
+	write(fd,write_buf, (size_t)sizeof(write_buf), 0);
+	printf("size of write buff = %d\n", sizeof(write_buf));
+	usleep(1000000);
+	strcpy(write_buf, "Z");
+	write(fd,write_buf, (size_t)sizeof(write_buf), 0);
+	printf("size of write buff = %d\n", sizeof(write_buf));
 	close(fd);
 	return 0;
 }

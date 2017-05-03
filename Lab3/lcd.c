@@ -25,7 +25,6 @@ static int __init lcd_init(void) {
 	msleep(100);
 	// Run initialization code for LCD display
 	initialize_lcd();
-	printk("got this far\n"); 
 	return 0;
 }
 
@@ -63,9 +62,12 @@ static void initialize_lcd() {
 	msleep(300);
 	for (i = 0; i < 3; i++) {
 		command(0,0,0,0,1,1,0,0,0,0); // 0x30
-		msleep(6);
+		msleep(5);
 	}
-	command(0,0,0,0,1,1,0,0,0,0); // set 8-bit/1line
+	command(0,0,0,0,1,1,1,0,0,0); // set 8-bit/1line
+	command(0,0,0,0,0,0,1,0,0,0); // Display off
+	clear();
+	command(0,0,0,0,0,0,0,1,1,0); // Increment mode, no shift 
 	command(0,0,0,0,0,0,1,1,1,0); // turn on display and cursor
 	command(0,0,0,0,0,0,0,1,1,0); // sets cursor and stuf 
 }
@@ -92,7 +94,6 @@ void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, in
 // sends a command to the LCD display
 void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0) {
 	 // Set Enable Low incase of poor startup
-    printk("test0\n");
     gpio_set_value(GPIO_EN, 0); // enable
     // set RS and RW
     gpio_set_value(GPIO_RS, rs);
@@ -119,56 +120,46 @@ void clear() {
 	command(0,0,0,0,0,0,0,0,0,1);
 }
 
-
-static ssize_t lcd_write(struct file* flip, const char* bufSource, size_t bufCount, loff_t* cursor) {
-	unsigned long ret = 0;
-	printk(KERN_INFO "lcd: writing to device...\n");
-	printk(KERN_INFO "%s", bufSource);
-	// Put data into virtual device
-	printk("Didn't crash yet lul\n");
-	int cnum[10]; // command number array
-	int i;
-	// conversion from char to int
-	for(i = 0; i < 10; i) {
-		if('1' == bufSource[i]) {
-			cnum[i] = 1;		
-		} else {
-			cnum[i] = 0;		
-		}
-	}
-	
-	printk("Issuing %d,%d,%d,%d,%d,%d,%d,%d,%d,%d \n", 
-	     cnum[0],cnum[1],cnum[2],cnum[3],cnum[4],cnum[5],
-	     cnum[6],cnum[7],cnum[8],cnum[9]);
-	/* command(cnum[0],cnum[1],cnum[2],cnum[3],
-		cnum[4],cnum[5],cnum[6],cnum[7],
-		cnum[8],cnum[9]); */ 
-	return copy_from_user(virtual_device.data, bufSource, bufCount);
+unsigned int_to_bin(unsigned k) {
+	printk("this is my k: %d\n", k);
+	return ((k==0 || k==1) ? k : ((k%2) + (10*int_to_bin(k/2))));
 }
 
-// helper function for toBits
-static unsigned int_to_bin (unsigned k) {
-	return (k == 0 || k == 1 ? k : ((k % 2) + 10 * int_to_bin(k / 2)));
-}
-
-// parses a charter to its ascii equivalent, returns
-// and array for each bit of charactrs ascii 
-static int* toBits(char key) {
-        unsigned k;
-        int bit;
-	static int a[8];	
-        k = int_to_bin((unsigned)key); // get key's ascii code
-       //Parses the key's ascii code, diplaying one bit at a time
-	//while( k != NULL && key != exit_key) {
+int* toBits(char key) {
+	unsigned k;
+	printk("My key is %c\n", key);
+	static int a[8];
+	k = int_to_bin((unsigned)key);
+	printk("This is the int_to_bin: %d\n",k);
 	int i;
-	for(i = 0; i < 8; i++) {
-		bit = (k % 2);
-        	k = k / 10;
-		a[i] = bit;
+	for (i=0; i<8; i++) {
+		a[i] = (k%2);
+		k = k/10;
 	}
 	return a;
 }
 
+static ssize_t lcd_write(struct file* filp, const char* bufSource, size_t bufCount, loff_t* cursor) {
+	unsigned long ret = 0;
+	printk(KERN_INFO "lcd: writing to device...\n");
+	printk(KERN_INFO "%s\n", bufCount);
+	printk(KERN_INFO "%s\n", bufSource);
+	// Put data into virtual device
+	ret = copy_from_user(virtual_device.data, bufSource, bufCount);
+	clear(); // Clear the screen
+	printk("virtual device data is %d\n", virtual_device.data); 
+	// Convert the character to its ascii equivalent
+	int* d;
+	d = toBits(virtual_device.data);
+	printk("%d,%d,%d,%d,%d,%d,%d,%d",d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);	
+
+	command(1,0,d[7],d[6],d[5],d[4],d[3],d[2],d[1],d[0]);
+
+	return ret;
+}
+
+// parses a charter to its ascii equivalent, returns
+// and array for each bit of charactrs ascii 
 static int lcd_open(struct inode *inode, struct file* filp) {
 	if (down_interruptible(&virtual_device.sem) != 0) {
 		printk(KERN_ALERT "lcd: could not lock device during open\n");

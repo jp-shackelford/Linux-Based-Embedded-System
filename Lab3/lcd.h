@@ -28,7 +28,6 @@ struct fake_device {
 
 static struct cdev* mcdev;
 static dev_t dev_num;
-static int busy;
 
 static int __init lcd_init(void);
 static void __exit lcd_exit(void);
@@ -38,12 +37,12 @@ static ssize_t lcd_write(struct file*, const char*, size_t, loff_t*);
 
 static void initialize_lcd(void);
 static void toggleShiftClock(void);
-static unsigned int_to_bin (unsigned k);
-static int* toBits(char key);
+unsigned int_to_bin (unsigned k);
+int* toBits(char key);
 
 static void command(int rs, int r, int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
 static void shiftData(int d7, int d6, int d5, int d4, int d3, int d2, int d1, int d0);
-static void clear(void);
+void clear(void);
 
 
 /* operations usable by this file. */

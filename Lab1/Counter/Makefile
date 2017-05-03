@@ -4,7 +4,7 @@ CC=arm-linux-gnueabihf-gcc
 SOURCES= music.c
 EXECUTABLE = music
 
-music: music.c
+music: $(SOURCES)
 	$(CC) -o music music.c
 	 
 .PHONY: clean

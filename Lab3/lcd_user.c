@@ -1,5 +1,7 @@
 #include "lcd_user.h"
 
+char* getInput();
+
 int main () {
 	
 	int fd;

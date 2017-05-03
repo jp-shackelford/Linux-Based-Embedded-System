@@ -74,6 +74,14 @@ void writechar(char x) {
 	command(c); 
 }
 
+void shiftRight() {
+	command("0000010100");
+}
+
+void shiftLeft() {
+	command("0000010000");
+}
+
 void setCursor(int pos) {
 	command("0000000010"); // Set cursor to home position
 	int curr = 0;
@@ -87,13 +95,22 @@ void setCursor(int pos) {
 	}
 }
 
-void shiftRight() {
-	command("0000010100");
+// call to this function will turn cursor on/of
+// 0 is off, 1 is on, 2 is off and blink, 3 is on and blink
+void cursorState(int x) {
+	switch(x) {
+		case 0: command("0000001100");
+			break;
+		case 1: command("0000001110");
+			break;
+		case 2: command("0000001101");
+			break;
+		case 3: command("0000001111");
+			break;
+	}
 }
 
-void shiftLeft() {
-	command("0000010000");
-}
+
 
 // clears screen sets cursor to top let
 void clear_and_home() {
@@ -116,10 +133,23 @@ void writeString(char* s) {
 	}
 }
 
+/* used for testing purposes 
 int main() {
 	init_lcd_library(); 
 	clear_and_home();
 	writeString("is this real?\n");
+	home(); 
+	usleep(1000000);
+	shiftRight();
+	usleep(1000000); 
+	shiftLeft();
 	home();
+	setCursor(11);
+	usleep(1000000);
+	cursorState(0);
+	usleep(1000000);
+	cursorState(1);
+	usleep(1000000);
+	cursorState(2);
 	return 0;
-}
+} */ 

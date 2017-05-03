@@ -7,7 +7,7 @@
 
 static int fd; 
 
-int init_lcd_library(void)  {
+static int init_lcd_library(void)  {
 	int size_bu; 
 	char write_buf[100];
 	fd = open(LCD_DIR, O_RDWR);
@@ -74,9 +74,30 @@ void writechar(char x) {
 	command(c); 
 }
 
+void setCursor(int pos) {
+	command("0000000010"); // Set cursor to home position
+	int curr = 0;
+	while (pos != curr && curr<65) {
+		if (curr==15) {
+			curr = 40;
+		} else {
+			shiftRight();
+			curr++;
+		}
+	}
+}
+
+void shiftRight() {
+	command("0000010100");
+}
+
+void shiftLeft() {
+	command("0000010000");
+}
+
 // clears screen sets cursor to top let
 void clear_and_home() {
-	command("0000000001");
+	command("0000000011");
 	usleep(16000);
 } 
 

@@ -5,9 +5,11 @@
 #include <time.h>
 #define LCD_DIR "/dev/lcd"
 
+// directory for kernel space
 static int fd; 
 
-static int init_lcd_library(void)  {
+// intializes library for use
+int init_lcd_library(void)  {
 	int size_bu; 
 	char write_buf[100];
 	fd = open(LCD_DIR, O_RDWR);
@@ -19,7 +21,8 @@ static int init_lcd_library(void)  {
 }
 
 
-
+// standard  command for LCD, takes string of
+// data of length 10, will print to screen
 static void command(char* data) {
 	if(strlen(data) == 10) {
 		char buff[10];
@@ -74,14 +77,18 @@ void writechar(char x) {
 	command(c); 
 }
 
+// shifts cursor right
 void shiftRight() {
 	command("0000010100");
 }
 
+// shifts cursor left
 void shiftLeft() {
 	command("0000010000");
 }
 
+//sets cursor position from 0 to 15
+// takes int position as a parameter 
 void setCursor(int pos) {
 	command("0000000010"); // Set cursor to home position
 	int curr = 0;
@@ -112,12 +119,13 @@ void cursorState(int x) {
 
 
 
-// clears screen sets cursor to top let
+// clears screen sets cursor to top left
 void clear_and_home() {
 	command("0000000011");
 	usleep(16000);
 } 
 
+// sets cursor back to position 0 
 void home() {
 	command("0000000010");
 }

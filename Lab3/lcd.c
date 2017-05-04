@@ -64,12 +64,12 @@ void initialize_lcd() {
 		command(0,0,0,0,1,1,0,0,0,0); // 0x30
 		msleep(5);
 	}
-	command(0,0,0,0,1,1,1,0,0,0); // set 8-bit/1line
+	command(0,0,0,0,1,1,0,0,0,0); // set 8-bit/1 line
 	command(0,0,0,0,0,0,1,0,0,0); // Display off
 	clear();
 	command(0,0,0,0,0,0,0,1,1,0); // Increment mode, no shift 
 	command(0,0,0,0,0,0,1,1,1,0); // turn on display and cursor
-	command(0,0,0,0,0,0,0,1,1,0); // sets cursor and stuf 
+	command(0,0,0,0,0,0,0,1,1,0); // sets cursor and stuff
 }
 
 void shiftData(int db7, int db6, int db5, int db4, int db3, int db2, int db1, int db0) {

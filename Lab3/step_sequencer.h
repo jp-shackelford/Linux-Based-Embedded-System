@@ -13,3 +13,4 @@
 	void init_pwm();
 	void getInput(char *prompt, char *inputBuffer, int buffersize); 
 	void play(int period, char time);
+	FILE* getStream(char *path, char *mode);

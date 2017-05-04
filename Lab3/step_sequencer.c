@@ -39,7 +39,7 @@ int main() {
 			} else if(inputBuffer[0] == 'w' || inputBuffer[0] == 'W') {
 				state = 3;
 			} else if(inputBuffer[0] == 't' || inputBuffer[0] == 'T') {
-				state = 3;
+				state = 4;
 			} else {
 				state = 2; // Default is playback stage	
 			}
@@ -191,7 +191,7 @@ int main() {
 // its enable, duty, and period are set
 // in global file pointers in the header 
 void init_pwm() {
-	FILE* pwmSet = fopen("/sys/devices/bone_capemgr.9/slots", "w"); 
+	FILE* pwmSet = getStream("/sys/devices/bone_capemgr.9/slots", "w"); 
 	if(!pwmSet) {
 		printf("pwmSet Broke\n");
 		exit(1);
@@ -201,20 +201,22 @@ void init_pwm() {
 	fprintf(pwmSet, "%s", "bone_pwm_P9_14");
 	fflush(pwmSet);
 	usleep(10000); 
-	musPeriod = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/period", "w");
+	musPeriod = getStream("/sys/devices/ocp.3/pwm_test_P9_14.15/period", "w");
 	if(!musPeriod) printf("musPeriod broke\n");
 	// set duty pointer 
-	musDuty = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/duty", "w");
+	musDuty =  getStream("/sys/devices/ocp.3/pwm_test_P9_14.15/duty", "w");
 	if(!musDuty) printf("musDuty broke\n");
 	fprintf(musDuty, "%d", 100000);
 	fflush(musDuty); 
 	// set run/enable pointer 
-	musEnable = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/run", "w");
+	musEnable = getStream("/sys/devices/ocp.3/pwm_test_P9_14.15/run", "w");
 	if(!musEnable) printf("musEnable broke\n"); 
 	fprintf(musEnable, "%d", 0); 
 	fflush(musEnable); 
 }
 
+// plays a note for a period of time on the PWM
+// takes int (period) and char time as parameters 
 void play(int period, char time) {
 	int t = 0;
 	
@@ -244,6 +246,13 @@ void play(int period, char time) {
 		usleep(t);
 	}	
 	
+}
+
+FILE* getStream(char *path, char *mode) {
+        while(!fopen(path, mode)) {
+                usleep(1);
+        }
+        return fopen(path, mode);
 }
 
 

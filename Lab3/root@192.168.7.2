@@ -5,8 +5,10 @@
 #include <time.h>
 #define LCD_DIR "/dev/lcd"
 
+// directory for kernel space
 static int fd; 
 
+// intializes library for use
 int init_lcd_library(void)  {
 	int size_bu; 
 	char write_buf[100];
@@ -19,13 +21,14 @@ int init_lcd_library(void)  {
 }
 
 
-
+// standard  command for LCD, takes string of
+// data of length 10, will print to screen
 static void command(char* data) {
 	if(strlen(data) == 10) {
 		char buff[10];
 		strcpy(buff, data);
 		write(fd, buff, 10);
-		usleep(1000); 
+		//usleep(100); 
 	} else {
 		printf("bad data:%s\n", data);	
 	}
@@ -53,12 +56,14 @@ static char* toBits(char key) {
 		a[i] = bit;
 	}
 	static char c[8];
-	for(i = 7; i >= 0; i--) {
+	int j = 7;
+	for(i = 0; i < 8; i++) {
 		if(1 == a[i]) {
-			c[i] = '1';		
+			c[j] = '1';		
 		} else {
-			c[i] = '0'; 		
+			c[j] = '0'; 		
 		}
+		j--; 
 	}
 	return c; 
 }
@@ -72,11 +77,58 @@ void writechar(char x) {
 	command(c); 
 }
 
-// clears screen sets cursor to top let
+// shifts cursor right
+void shiftRight() {
+	command("0000010100");
+}
+
+// shifts cursor left
+void shiftLeft() {
+	command("0000010000");
+}
+
+//sets cursor position from 0 to 15
+// takes int position as a parameter 
+void setCursor(int pos) {
+	command("0000000010"); // Set cursor to home position
+	int curr = 0;
+	while (pos != curr && curr<65) {
+		if (curr==15) {
+			curr = 40;
+		} else {
+			shiftRight();
+			curr++;
+		}
+	}
+}
+
+// call to this function will turn cursor on/of
+// 0 is off, 1 is on, 2 is off and blink, 3 is on and blink
+void cursorState(int x) {
+	switch(x) {
+		case 0: command("0000001100");
+			break;
+		case 1: command("0000001110");
+			break;
+		case 2: command("0000001101");
+			break;
+		case 3: command("0000001111");
+			break;
+	}
+}
+
+
+
+// clears screen sets cursor to top left
 void clear_and_home() {
-	command("0000000001");
+	command("0000000011");
 	usleep(16000);
 } 
+
+// sets cursor back to position 0 
+void home() {
+	command("0000000010");
+}
 
 // writes bottom 16 characters or till newline of a string
 // to the top 16 places on LCD dot matrix 
@@ -89,9 +141,23 @@ void writeString(char* s) {
 	}
 }
 
+/* used for testing purposes 
 int main() {
 	init_lcd_library(); 
 	clear_and_home();
-	writeString("Go Fuck Yourself"); 
+	writeString("is this real?\n");
+	home(); 
+	usleep(1000000);
+	shiftRight();
+	usleep(1000000); 
+	shiftLeft();
+	home();
+	setCursor(11);
+	usleep(1000000);
+	cursorState(0);
+	usleep(1000000);
+	cursorState(1);
+	usleep(1000000);
+	cursorState(2);
 	return 0;
-}
+} */ 

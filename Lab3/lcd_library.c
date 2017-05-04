@@ -23,7 +23,7 @@ int init_lcd_library(void)  {
 
 // standard  command for LCD, takes string of
 // data of length 10, will print to screen
-static void command(char* data) {
+void command(char* data) {
 	if(strlen(data) == 10) {
 		char buff[10];
 		strcpy(buff, data);
@@ -35,13 +35,13 @@ static void command(char* data) {
 }
 
 // helper function for toBits
-static unsigned int_to_bin (unsigned k) {
+unsigned int_to_bin (unsigned k) {
 	return (k == 0 || k == 1 ? k : ((k % 2) + 10 * int_to_bin(k / 2)));
 }
 
 // parses a charter to its ascii equivalent, returns
 // and string of length 8 with ascii representation
-static char* toBits(char key) {
+char* toBits(char key) {
    unsigned k;
    int bit;
    char exit_key = 'q';
@@ -121,7 +121,7 @@ void cursorState(int x) {
 
 // clears screen sets cursor to top left
 void clear_and_home() {
-	command("0000000011");
+	command("0000000001");
 	usleep(16000);
 } 
 
@@ -141,23 +141,3 @@ void writeString(char* s) {
 	}
 }
 
-/* used for testing purposes 
-int main() {
-	init_lcd_library(); 
-	clear_and_home();
-	writeString("is this real?\n");
-	home(); 
-	usleep(1000000);
-	shiftRight();
-	usleep(1000000); 
-	shiftLeft();
-	home();
-	setCursor(11);
-	usleep(1000000);
-	cursorState(0);
-	usleep(1000000);
-	cursorState(1);
-	usleep(1000000);
-	cursorState(2);
-	return 0;
-} */ 

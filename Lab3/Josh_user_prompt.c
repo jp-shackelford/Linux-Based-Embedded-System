@@ -7,12 +7,15 @@
 #include <string.h> 
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include "lcd_library.c" 
+#include "step_squencer.h"
+// takes prompt, inputbufer and buffersize as parameters
+// prompt will display on terminal shell prompting for user input
+// inputbufer will be string getting written to
+// bufersize is the amount getting written to inputbuffer 
 void getInput (char *prompt, char *inputBuffer, int buffersize) {
-	
 	printf("%s : ", prompt);
 	fgets(inputBuffer, buffersize, stdin);
-
 	int i;
 	for(i = 0; i < strlen(inputBuffer); i++) {
 		if( inputBuffer[i] == '0' ||
@@ -33,14 +36,12 @@ void getInput (char *prompt, char *inputBuffer, int buffersize) {
 			break;
 		}
 	}	
-
 	if(inputBuffer[strlen(inputBuffer)-1] != '\n') {
 		int overflow = 0;
 
 		while (fgetc(stdin) != '\n') {
 			overflow++;
 		}		
-
 		if(overflow > 0) {
 			printf("Error! You had %d too many characters. Try again, only input 16.\n", overflow);
 			getInput(prompt, inputBuffer, buffersize);
@@ -50,8 +51,35 @@ void getInput (char *prompt, char *inputBuffer, int buffersize) {
 	}
 }
 
+void init_pwm() {
+	pwmSet = fopen("/sys/devices/bone_capemgr.9/slots", "w"); 
+	if(!pwmSet) {
+		printf("pwmSet Broke\n");
+		exit(1);
+	} 
+	fprintf(pwmSet, "%s", "am33xx_pwm");
+	fflush(pwmSet); 
+	fprintf(pwmSet, "%s", "bone_pwm_P9_14");
+	fflush(pwmSet);
+	musPeriod = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/period", "w");
+	if(!musRun) printf("musPeriod broke\n");
+	// set duty pointer 
+	FILE *musDuty = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/duty", "w");
+	if(!musDuty) printf("musDuty broke\n");
+	fprintf(musDuty, "%d", 100000);
+	fflush(musDuty); 
+	// set run/enable pointer 
+	FILE *musEnable = fopen("/sys/devices/ocp.3/pwm_test_P9_14.15/run", "w");
+	if(!musEnable) printf("musEnable broke\n"); 
+	fprintf(musEnable, "%d", 0); 
+	fflush(musEnable); 
+}
+
 int main() {
 	static char inputBuffer[17];
+	init_pwm(); 
+	init_lcd_library(); 
+	setCursor(0);
 	getInput("Please Enter 16 numbers between 0 and 6", inputBuffer, 17);
 	printf("You entered: %s\n", inputBuffer);
 }

@@ -8,6 +8,7 @@ obj-m += lcd.o
 KDIR = /tmp/guest-zdyaye/bb-kernel/KERNEL
 PWD = $(shell pwd)
 
+
 default:
 	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
 clean:

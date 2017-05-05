@@ -17,7 +17,7 @@ To run the step sequencer, follow the commands below: <br />
 $ insmod lcd.ko <br />
 
 2. Create the device file for the LCD by running <br />
-$ dmesg
+$ dmesg <br />
    and then copying the line starting with "mknod". This command is usually <br />
 $ mknod /dev/lcd c 240 0 <br />
 
@@ -25,9 +25,9 @@ $ mknod /dev/lcd c 240 0 <br />
 $ make step <br />
 
 4. Run the program using <br />
-$ ./step
+$ ./step <br />
 
-5. Follow the instructions on the screen
+5. Follow the instructions on the screen! <br />
 
 
 

@@ -12,6 +12,25 @@ The user space code is a note playback program. It displays instructions on the 
 well as user input and then plays back certain notes based upon the numbers the user inputs. <br />
 For detailed instruction on how the program works, see the report found under Group6/Lab3/Lab3_Report.pdf. <br />
 
+To run the step sequencer, follow the commands below: <br />
+1. Insert the kernel module into the BeagleBone's Linux kernel with <br />
+$ insmod lcd.ko <br />
+
+2. Create the device file for the LCD by running <br />
+$ dmesg
+   and then copying the line starting with "mknod". This command is usually <br />
+$ mknod /dev/lcd c 240 0 <br />
+
+3. Compile the step-sequencer program with <br />
+$ make step <br />
+
+4. Run the program using <br />
+$ ./step
+
+5. Follow the instructions on the screen
+
+
+
 
 
 Lab 2 - EE 474

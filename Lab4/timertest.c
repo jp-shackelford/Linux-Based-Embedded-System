@@ -69,7 +69,7 @@ int main() {
 			timer_settime(timerid, 0, &its, NULL); // Reset timer to 0
 			printf("%d\n", &its);
            	printf("%d\n", timer_gettime(timerid, &its));
-            while (timer_gettime(timerid, &its) < 0) {
+            while (timer_gettime(timerid, its.it_value.tv_nsec) > 0) {
             	printf("%d\n", timer_gettime(timerid, &its));
             } // While timer hasn't expired
        	}

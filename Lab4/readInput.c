@@ -1,12 +1,16 @@
- #include <stdlib.h>  
- #include <stdio.h>  
- #include <string.h>  
- #include <unistd.h>
- #include <fcntl.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <string.h>  
+#include <unistd.h>
+#include <fcntl.h>  
+#include <time.h>
+#include <signal.h>
 
 #define SAMPLE_SIZE 10
 #define SAMPLE_TIME 10000 // 10000µs = 10ms; 10 samples = .1s
-#define THRESHOLD 
+#define THRESHOLD 1000
+#define CLOCKID CLOCK_REALTIME // Settable, realtime system clock
+#define SIG SIGRTMIN
 
 // Reads the value on an analog pin
 int readADC(unsigned int pin) {  
@@ -63,15 +67,63 @@ long average(int * data) {
 }
 
 
-int main() {
+int main(int argc, char *argv[]) {
+    
+    timer_t timerid;
+    struct sigevent sev;
+    struct itimerspec its;
+    sigset_t mask;
+    struct sigaction sa;
+
     system("echo BB-ADC > /sys/devices/bone_capemgr.9/slots");
+
+    /* Establish handler for timer signal */
+    printf("Establishing handler for signal %d\n", SIG);
+    sa.sa_flags = SA_SIGINFO;
+    sa.sa_sigaction = handler;
+    sigemptyset(&sa.sa_mask);
+    if (sigaction(SIG, &sa, NULL) == -1) {
+        printf("sigaction");
+        exit(1);
+    }
+
+    /* Block timer signal temporarily */
+    printf("Blocking signal %d\n", SIG);
+    sigemptyset(&mask);
+    sigaddset(&mask, SIG);
+    if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1) {
+        printf("sigprocmask");   
+        exit(1);     
+    }
+
+    /* Create the timer */
+    sev.sigev_notify = SIGEV_SIGNAL;
+    sev.sigev_signo = SIG;
+    sev.sigev_value.sival_ptr = &timerid;
+    if (timer_create(CLOCKID, &sev, &timerid) == -1) {
+        printf("timer_create");
+        exit(1);
+    }
+    printf("timer ID is 0x%lx\n", (long) timerid);
+
+    /* Start the timer */
+    its.it_value.tv_sec = 1;
+    its.it_value.tv_nsec = 1;
+    its.it_interval.tv_sec = its.it_value.tv_sec;
+    its.it_interval.tv_nsec = its.it_value.tv_nsec;
 
     static int front[2*SAMPLE_SIZE];
     static int back[2*SAMPLE_SIZE];
 
-
     int i;
     while (1) {
+        // Set timer to 0ns
+        if (timer_settime(timerid, 0, &its, NULL) == -1) {
+            printf("timer_settime");
+            exit(1);
+        }
+        
+        // Collect samples
         for (i=0; i<SAMPLE_SIZE; i++) {
             front[i] = readADC(0);
             front[i+SAMPLE_SIZE] = readADC(2);
@@ -83,6 +135,11 @@ int main() {
         long avgFront = average(front);
         long avgBack  = average(back);
 
+        if (avgFront > THRESHOLD) { // If something closer than threshold
+            // Interrupt motors
+        } else if (avgBack > THRESHOLD) {
+
+        }
 
         /* TODO:
             Interpret data. If avg's are less than the threshold then interrupt motors

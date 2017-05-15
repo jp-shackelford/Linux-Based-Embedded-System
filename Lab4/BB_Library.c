@@ -8,6 +8,9 @@
 // file that when written to initalizes a GPIO folder 
 #define GPIO_EXPORT_PATH "/sys/class/gpio/export"
 #define PATH_BUF 1024
+
+
+
  // Get Stream. Takes a file path, and mode type as parameters
  // will wait for file to be initialized due to BB's timing delays
  // Note: if the path passed in doesn't or will never exist, getStream
@@ -23,13 +26,15 @@ FILE* getStream(char *path, char *mode) {
   // call this to clean up the code a bit
 void writeToStream(FILE *stream, char *format, char *value) {
     fprintf(stream, format, value);
-        fflush(stream);
+    fflush(stream);
 }
 
 // returns a pointer to value of a GPIO 
 FILE* initGPIO(int gpioNumber) {
     FILE *exportP = getStream(GPIO_EXPORT_PATH, "direction");
-    writeToStream(exportP, "%d", gpioNumber);
+    char gpioNumString[PATH_BUF];
+    sprintf(gpioNumString, "%d", gpioNumber);
+    writeToStream(exportP, "%d", gpioNumString);
     FILE* currentP; 
     char tempPath[PATH_BUF];
     sprintf(tempPath, "%s%d%s", "/sys/class/gpio/gpio", gpioNumber, "/direction");
@@ -60,10 +65,10 @@ FILE* initPWM(int pwm) {
     sprintf(dpath, "%s%s", path, "duty");
     sprintf(epath, "%s%s", path, "run");
 	FILE* period = getStream(ppath, "w");
-    writeToStream(period, "%d", 1020408); //Set Frequency to 980Hz
+    writeToStream(period, "%d", "1020408"); //Set Frequency to 980Hz
 	FILE* duty =  getStream(dpath, "w");
-	writeToStream(duty, "%d", 510204); // intialize to 50% duty cycle  
+	writeToStream(duty, "%d", "510204"); // intialize to 50% duty cycle  
 	FILE* enable = getStream(epath, "w");
-	writeToStream(enable, "%d", 0); 
+	writeToStream(enable, "%d", "0"); 
     return duty; 
 }

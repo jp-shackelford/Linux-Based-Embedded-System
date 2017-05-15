@@ -13,9 +13,9 @@ typedef struct {
 // Will also initalize In1pin and In2pin to 0
 // initialize PWMpin to a frequency of 980hz with a duty cycle of 255
 // takes inputs In1, In2, PWM, STDBY, and offset to declare the struct as such
-Motor* motorinit(int In1pin, int In2pin, int PWMpin, int STBYpin, int offset)
+Motor* motorinit(Motor *m, int In1pin, int In2pin, int PWMpin, int STBYpin, int offset)
 {
-  Motor *thism = malloc(sizeof(Motor));
+  m = malloc(sizeof(Motor));
   thism->IN1PIN = initGPIO(In1pin);
   thism->IN2PIN = initGPIO(In2pin);
   thism->PWM  = initPWM(PWMpin);
@@ -28,6 +28,7 @@ Motor* motorinit(int In1pin, int In2pin, int PWMpin, int STBYpin, int offset)
 // for testing...
 int main() {
     initPWM(1); 
+    initPWM(0); 
 }
 
 /*

@@ -13,105 +13,101 @@ typedef struct {
 // Will also initalize In1pin and In2pin to 0
 // initialize PWMpin to a frequency of 980hz with a duty cycle of 255
 // takes inputs In1, In2, PWM, STDBY, and offset to declare the struct as such
-Motor* motorinit(Motor *m, int In1pin, int In2pin, int PWMpin, int STBYpin, int offset)
-{
-  m = malloc(sizeof(Motor));
+// note that the STDBY pin for this lab MUST BE THE SAME FOR BOTH MOTORS 
+void motorinit(Motor *m, int In1pin, int In2pin, int PWMpin, int STBYpin, int offset) {
   m->IN1PIN = initGPIO(In1pin);
   m->IN2PIN = initGPIO(In2pin);
-  m->PWM  = initPWM(PWMpin);
-  m->STDBY  = initGPIO(STBYpin);
+  m->STDBY  = initGPIO(STBYpin); 
+  /* initPWM will initalize the PWM's for this lab
+    it takes an int as a parameter, 1 will init P8_19 (right side)
+    and 0 will init p9_14 (left side), the function returns a 
+    pointer to the duty value of the PWM that can be
+    set using writeToStream */
+  m->PWM = initPWM(PWMpin);
+  // this offset is used for some scalar factor
+  // in the motor, more on this later... 
   m->OFFSET = offset;
   // TODO-> initialize these GPIO's 
 }
 
+void fwd(Motor *m, int speed) {
+   writeToStream(m->IN1PIN, "%d", "1");
+   writeToStream(m->IN2PIN, "%d", "1");
+   setDuty(m->PWM, speed);
+}
+
+void rev(Motor *m, int speed) {
+   writeToStream(m->IN1PIN, "%d", "0");
+   writeToStream(m->IN2PIN, "%d", "1");
+   setDuty(m->PWM, speed);
+}
+void drive(Motor *m, int speed) {
+  writeToStream(m->STDBY, "%d", "1");
+  speed = speed * m->OFFSET;
+  if (speed>=0) fwd(m, speed);
+  else rev(m, -speed);
+}
+
+void brake(Motor *m) {
+   writeToStream(m->IN1PIN, "%d", "1");
+   writeToStream(m->IN2PIN, "%d", "1");
+   setDuty(m->PWM, 0);
+}
+
+void standby(Motor *m) {
+   writeToStream(m->STDBY, "%d", "0");
+}
+
+void forward_speed(Motor *m0, Motor * m1, int speed) {
+  drive(m0, speed);
+  drive(m1, speed);
+}
+
+void forward(Motor *m0, Motor *m1) {
+  drive(m0, 5);
+  drive(m1, 5);
+}
+
+void back_speed(Motor *m0, Motor *m1, int speed) {
+  int temp = abs(speed);
+  drive(m0, -temp);
+  drive(m1, -temp);
+}
+
+void back(Motor * m0, Motor * m1) {
+  drive(m0, -4);
+  drive(m1, -4);
+}
+
+void left(Motor * m0, Motor * m1, int speed) {
+  int temp = abs(speed);
+  drive(m0, -temp);
+  drive(m1, temp);
+  
+}
+
+void right(Motor * m0, Motor * m1, int speed) {
+  int temp = abs(speed);
+  drive(m0, temp);
+  drive(m1, -temp);
+}
+
+void brake_full(Motor * m0, Motor * m1) {
+	brake(m0);
+	brake(m1);
+} 
+
 // for testing...
 int main() {
-    FILE* pwmOne = initPWM(1); 
-    FILE* pwmTwo = initPWM(0); 
+    // instantiate motor with control pins 115 and 49
+    // pwm pin P8_19 (right side), and STBYpin 112 
+    Motor * m0 = malloc(sizeof(Motor));
+    motorinit(m0, 115, 49, 1, 112, 1);
+    Motor * m1 = malloc(sizeof(Motor));
+    motorinit(m1, 60,  48, 0, 112, 1); 
+    printf("%d%d%d%d%d\n", m0->IN1PIN, m0->IN2PIN, m0->STDBY, m0->PWM, m0->OFFSET);
+    forward(m0, m1);
+    usleep(1000000);
+    free(m0);
+    free(m1); 
 }
-
-/*
-void Motor::drive(int speed)
-{
-  digitalWrite(Standby, HIGH);
-  speed = speed * Offset;
-  if (speed>=0) fwd(speed);
-  else rev(-speed);
-}
-void Motor::drive(int speed, int duration)
-{
-  drive(speed);
-  delay(duration);
-}
-
-void Motor::fwd(int speed)
-{
-   digitalWrite(In1, HIGH);
-   digitalWrite(In2, LOW);
-   analogWrite(PWM, speed);
-
-}
-
-void Motor::rev(int speed)
-{
-   digitalWrite(In1, LOW);
-   digitalWrite(In2, HIGH);
-   analogWrite(PWM, speed);
-}
-
-void Motor::brake()
-{
-   digitalWrite(In1, HIGH);
-   digitalWrite(In2, HIGH);
-   analogWrite(PWM,0);
-}
-
-void Motor::standby()
-{
-   digitalWrite(Standby, LOW);
-}
-
-void forward(Motor motor1, Motor motor2, int speed)
-{
-	motor1.drive(speed);
-	motor2.drive(speed);
-}
-void forward(Motor motor1, Motor motor2)
-{
-	motor1.drive(DEFAULTSPEED);
-	motor2.drive(DEFAULTSPEED);
-}
-
-
-void back(Motor motor1, Motor motor2, int speed)
-{
-	int temp = abs(speed);
-	motor1.drive(-temp);
-	motor2.drive(-temp);
-}
-void back(Motor motor1, Motor motor2)
-{
-	motor1.drive(-DEFAULTSPEED);
-	motor2.drive(-DEFAULTSPEED);
-}
-void left(Motor left, Motor right, int speed)
-{
-	int temp = abs(speed)/2;
-	left.drive(-temp);
-	right.drive(temp);
-	
-}
-
-
-void right(Motor left, Motor right, int speed)
-{
-	int temp = abs(speed)/2;
-	left.drive(temp);
-	right.drive(-temp);
-	
-}
-void brake(Motor motor1, Motor motor2)
-{
-	motor1.brake();
-	motor2.brake();
-} */ 

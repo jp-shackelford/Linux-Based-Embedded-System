@@ -24,8 +24,12 @@ FILE* getStream(char *path, char *mode) {
 
   // combines fprintf and flush into one function
   // call this to clean up the code a bit
+  // note: that one would normally call fprintf to write
+  // an int with "%d" and an int value, all inputs to this
+  // must be wraped as a string
 void writeToStream(FILE *stream, char *format, char *value) {
     if(strcmp(format, "%d") == 0) {
+        // cast back into int if writing is of type int
         fprintf(stream, format, atoi(value));
         fflush(stream);
     } else {
@@ -35,16 +39,19 @@ void writeToStream(FILE *stream, char *format, char *value) {
 }
 
 // returns a pointer to value of a GPIO 
+// also initializes said gpio 
 FILE* initGPIO(int gpioNumber) {
-    FILE *exportP = getStream(GPIO_EXPORT_PATH, "direction");
+    FILE *exportP = getStream(GPIO_EXPORT_PATH, "w");
     char gpioNumString[PATH_BUF];
     sprintf(gpioNumString, "%d", gpioNumber);
     writeToStream(exportP, "%d", gpioNumString);
     FILE* currentP; 
     char tempPath[PATH_BUF];
     sprintf(tempPath, "%s%d%s", "/sys/class/gpio/gpio", gpioNumber, "/direction");
+    currentP = getStream(tempPath, "w");
     writeToStream(currentP, "%s", "out");
     sprintf(tempPath, "%s%d%s", "/sys/class/gpio/gpio", gpioNumber, "/value");
+    currentP = getStream(tempPath, "w");
     return getStream(tempPath, "w"); 
 } 
 
@@ -76,4 +83,38 @@ FILE* initPWM(int pwm) {
 	FILE* enable = getStream(epath, "w");
 	writeToStream(enable, "%d", "1"); 
     return duty; 
+}
+
+// sets duty of a PWM from 0 - 100 % in 12 step increments 
+void setDuty(FILE* pwmDuty, int state) {
+    switch(state) {
+        // 0 % duty cycle (low)
+        case 0: writeToStream(pwmDuty, "%d", "0");
+                break;
+        // 12.5% duty cycle
+        case 1: writeToStream(pwmDuty, "%d", "127551");
+                break;
+        // 25% duty cycle
+        case 2: writeToStream(pwmDuty, "%d", "255102");
+                break;
+        // 37.5% duty cycle
+        case 3: writeToStream(pwmDuty, "%d", "382653");
+                break;
+        // 50% duty cycle
+        case 4: writeToStream(pwmDuty, "%d", "510204");
+                break;
+        // 62.5% duty cycle
+        case 5: writeToStream(pwmDuty, "%d", "637755");
+                break; 
+        // 75% duty cycle
+        case 6: writeToStream(pwmDuty, "%d", "765306");
+                break;
+        // 87.5% duty cycle
+        case 7: writeToStream(pwmDuty, "%d", "892857");
+                break;
+        // 100% duty cycle (high)
+        case 8: writeToStream(pwmDuty, "%d", "1020408"); 
+        default: printf("Bad input, between 0-8\n");
+                break;
+    }
 }

@@ -25,8 +25,13 @@ FILE* getStream(char *path, char *mode) {
   // combines fprintf and flush into one function
   // call this to clean up the code a bit
 void writeToStream(FILE *stream, char *format, char *value) {
-    fprintf(stream, format, value);
-    fflush(stream);
+    if(strcmp(format, "%d") == 0) {
+        fprintf(stream, format, atoi(value));
+        fflush(stream);
+    } else {
+        fprintf(stream, format, value);
+        fflush(stream);
+    }
 }
 
 // returns a pointer to value of a GPIO 
@@ -50,11 +55,11 @@ FILE* initPWM(int pwm) {
 	FILE* pwmSet = getStream("/sys/devices/bone_capemgr.9/slots", "w"); 
 	writeToStream(pwmSet, "%s", "am33xx_pwm");
 	writeToStream(pwmSet, "%s", "bone_pwm_P9_14");
-    writeToStream(pwmSet, "%s", "bome_pwm_p8_19"); 
+    writeToStream(pwmSet, "%s", "bone_pwm_P8_19"); 
     char path[PATH_BUF];
     // if path == 1, use EHRPWM2A
     if(pwm) {
-        sprintf(path, "%s", "/sys/devices/ocp.3/pwm_test_P8_19.15/");
+        sprintf(path, "%s", "/sys/devices/ocp.3/pwm_test_P8_19.16/");
     } else { // path == 0 use EHRPWM1A
         sprintf(path, "%s", "/sys/devices/ocp.3/pwm_test_P9_14.15/"); 
     }
@@ -69,6 +74,6 @@ FILE* initPWM(int pwm) {
 	FILE* duty =  getStream(dpath, "w");
 	writeToStream(duty, "%d", "510204"); // intialize to 50% duty cycle  
 	FILE* enable = getStream(epath, "w");
-	writeToStream(enable, "%d", "0"); 
+	writeToStream(enable, "%d", "1"); 
     return duty; 
 }

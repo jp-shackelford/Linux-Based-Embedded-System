@@ -16,19 +16,18 @@ typedef struct {
 Motor* motorinit(Motor *m, int In1pin, int In2pin, int PWMpin, int STBYpin, int offset)
 {
   m = malloc(sizeof(Motor));
-  thism->IN1PIN = initGPIO(In1pin);
-  thism->IN2PIN = initGPIO(In2pin);
-  thism->PWM  = initPWM(PWMpin);
-  thism->STDBY  = initGPIO(STBYpin);
-  thism->OFFSET = offset;
+  m->IN1PIN = initGPIO(In1pin);
+  m->IN2PIN = initGPIO(In2pin);
+  m->PWM  = initPWM(PWMpin);
+  m->STDBY  = initGPIO(STBYpin);
+  m->OFFSET = offset;
   // TODO-> initialize these GPIO's 
-  return thism; 
 }
 
 // for testing...
 int main() {
-    initPWM(1); 
-    initPWM(0); 
+    FILE* pwmOne = initPWM(1); 
+    FILE* pwmTwo = initPWM(0); 
 }
 
 /*

@@ -89,31 +89,31 @@ FILE* initPWM(int pwm) {
 void setDuty(FILE* pwmDuty, int state) {
     switch(state) {
         // 0 % duty cycle (low)
-        case 0: writeToStream(pwmDuty, "%d", "0");
+        case 8: writeToStream(pwmDuty, "%d", "0");
                 break;
         // 12.5% duty cycle
-        case 1: writeToStream(pwmDuty, "%d", "127551");
+        case 7: writeToStream(pwmDuty, "%d", "1000");
                 break;
         // 25% duty cycle
-        case 2: writeToStream(pwmDuty, "%d", "255102");
+        case 6: writeToStream(pwmDuty, "%d", "5000");
                 break;
         // 37.5% duty cycle
-        case 3: writeToStream(pwmDuty, "%d", "382653");
+        case 5: writeToStream(pwmDuty, "%d", "10000");
                 break;
         // 50% duty cycle
-        case 4: writeToStream(pwmDuty, "%d", "510204");
+        case 4: writeToStream(pwmDuty, "%d", "50000");
                 break;
         // 62.5% duty cycle
-        case 5: writeToStream(pwmDuty, "%d", "637755");
+        case 3: writeToStream(pwmDuty, "%d", "100000");
                 break; 
         // 75% duty cycle
-        case 6: writeToStream(pwmDuty, "%d", "765306");
+        case 2: writeToStream(pwmDuty, "%d", "200000");
                 break;
         // 87.5% duty cycle
-        case 7: writeToStream(pwmDuty, "%d", "892857");
+        case 1: writeToStream(pwmDuty, "%d", "300000");
                 break;
         // 100% duty cycle (high)
-        case 8: writeToStream(pwmDuty, "%d", "1020408"); 
+        case 0: writeToStream(pwmDuty, "%d", "400000"); 
                 break;
         default: printf("Bad input, between 0-8\n");
                 break;

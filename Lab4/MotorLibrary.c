@@ -106,9 +106,10 @@ int main() {
     Motor * m1 = malloc(sizeof(Motor));
     motorinit(m1, 60,  48, 0, 112, 1); 
     printf("%d%d%d%d%d\n", m0->IN1PIN, m0->IN2PIN, m0->STDBY, m0->PWM, m0->OFFSET);
-    drive(m0, 8);
-    drive(m1, 8);
+    drive(m0, 2);
+    drive(m1, 2);
     usleep(1000000);
+    brake_full(m0, m1); 
     free(m0);
     free(m1); 
 }

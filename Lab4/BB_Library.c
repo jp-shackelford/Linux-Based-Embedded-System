@@ -114,6 +114,7 @@ void setDuty(FILE* pwmDuty, int state) {
                 break;
         // 100% duty cycle (high)
         case 8: writeToStream(pwmDuty, "%d", "1020408"); 
+                break;
         default: printf("Bad input, between 0-8\n");
                 break;
     }

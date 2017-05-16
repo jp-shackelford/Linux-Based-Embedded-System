@@ -32,7 +32,7 @@ void motorinit(Motor *m, int In1pin, int In2pin, int PWMpin, int STBYpin, int of
 
 void fwd(Motor *m, int speed) {
    writeToStream(m->IN1PIN, "%d", "1");
-   writeToStream(m->IN2PIN, "%d", "1");
+   writeToStream(m->IN2PIN, "%d", "0");
    setDuty(m->PWM, speed);
 }
 
@@ -64,8 +64,8 @@ void forward_speed(Motor *m0, Motor * m1, int speed) {
 }
 
 void forward(Motor *m0, Motor *m1) {
-  drive(m0, 5);
-  drive(m1, 5);
+  drive(m0, 0);
+  drive(m1, 0);
 }
 
 void back_speed(Motor *m0, Motor *m1, int speed) {
@@ -75,8 +75,8 @@ void back_speed(Motor *m0, Motor *m1, int speed) {
 }
 
 void back(Motor * m0, Motor * m1) {
-  drive(m0, -4);
-  drive(m1, -4);
+  drive(m0, 0);
+  drive(m1, 0);
 }
 
 void left(Motor * m0, Motor * m1, int speed) {
@@ -106,7 +106,8 @@ int main() {
     Motor * m1 = malloc(sizeof(Motor));
     motorinit(m1, 60,  48, 0, 112, 1); 
     printf("%d%d%d%d%d\n", m0->IN1PIN, m0->IN2PIN, m0->STDBY, m0->PWM, m0->OFFSET);
-    forward(m0, m1);
+    drive(m0, 8);
+    drive(m1, 8);
     usleep(1000000);
     free(m0);
     free(m1); 

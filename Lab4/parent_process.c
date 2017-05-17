@@ -11,39 +11,36 @@
 
 volatile sig_atomic_t killwhich;
 
-void handler(int sig) {
-	alarm(100000);
-	if (sig == SIGALRM) {
-		printf("polling...\n");
-		if (poll(0) > THRESHOLD) {
-			printf("something in front\n");
-			killwhich = 1;
-		} else if (poll(1) > THRESHOLD) {
-			printf("something in back\n");
-			killwhich = 2;
-		} else {
-			printf("all clear\n");
-			killwhich = 0;
-		}
-	}
-}
-
 int poll(int which) {
 	int data[2];
 	if (which) {
-		/*data[0] = readADC(0);
-		data[1] = readADC(2);*/
-		data[0] = 10;
-		data[1] = 16;
+		data[0] = readADC(0);
+		data[1] = readADC(2);
+
 	} else {
-		/*data[0] = readADC(4);
-		data[1] = readADC(6);*/
-		data[0] = 10;
-		data[1] = 16;
+		data[0] = readADC(4);
+		data[1] = readADC(6);
 	}
 
 	return (data[0]+data[1])/2;
 }
+
+
+void handler(int sig) {
+	printf("polling...\n");
+	if (poll(0) > THRESHOLD) {
+		printf("something in front\n");
+		killwhich = 1;
+	} else if (poll(1) > THRESHOLD) {
+		printf("something in back\n");
+		killwhich = 2;
+	} else {
+		printf("all clear\n");
+		killwhich = 0;
+	}
+}
+
+
 
 // Reads the value on an analog pin and returns it as an int
 int readADC(unsigned int pin) {  
@@ -67,6 +64,7 @@ int readADC(unsigned int pin) {
     return atoi(val);     //returns an integer value (rather than ascii)  
 }
 
+
 int main() {
 	pid_t pid;
 	key_t MyKey;
@@ -74,18 +72,23 @@ int main() {
 
 	MyKey   = ftok(".", 's');        
     pid_t ShmID   = shmget(MyKey, sizeof(pid_t), 0666);
-    *ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
+    ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
     pid = *ShmPTR;                
     shmdt(ShmPTR);
 
+    printf("My pid is %d\n", pid);
     signal(SIGALRM, handler); // Register with handler
 
-    alarm(100000);
+    ualarm(250000, 250000);
     while(1) {
     	if (killwhich == 1) {
+			printf("Killing 1\n");
     		kill(pid, SIGUSR1);
+    		killwhich = 0;
     	} else if (killwhich == 2) {
+			printf("Killing 2\n");
     		kill(pid, SIGUSR2);
+    		killwhich = 0;
     	}
     }
 

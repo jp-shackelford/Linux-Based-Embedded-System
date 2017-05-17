@@ -6,14 +6,17 @@
 #include  <time.h>
 
 void handler(int sig) {
-	switch(sig) {
-		case SIGUSR1 :
-			printf("got SIGUSR1\n");
-			break;
-		case SIGUSR2 :
-			printf("got SIGUSR2\n");
-			break;
-	}
+	sigset_t mask;
+	sigfillset(&mask);
+	sigprocmask(SIG_BLOCK, &mask, NULL); // Block all signals so we process one at a time
+	
+	if (sig == SIGUSR1) {
+		printf("Got SIGUSR1\n");
+	} else if (sig == SIGUSR2) {
+		printf("Got SIGUSR2\n");
+	}	
+	//usleep(100000);
+	sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock all signals
 }
 
 
@@ -29,7 +32,6 @@ int main() {
 		printf("SIGUSR2 install error\n");
 		raise(SIGKILL);
 	}
-
 	
 
 	MyKey = ftok(".", 's');

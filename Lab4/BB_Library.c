@@ -13,11 +13,13 @@
 
  // Get Stream. Takes a file path, and mode type as parameters
  // will wait for file to be initialized due to BB's timing delays
- // Note: if the path passed in doesn't or will never exist, getStream
- // will loop indefinetly
+ // if the file exceeds 10000 us, null will be returned with an error message
 FILE* getStream(char *path, char *mode) {
     int count = 0;
-    while(count != 1000) {
+    while(count != 10000) {
+	if(fopen(path, mode)) {
+	    return fopen(path,mode);
+	}
         usleep(1);
         count++; 
     }
@@ -25,7 +27,7 @@ FILE* getStream(char *path, char *mode) {
         printf("File:%s wont open\n", path); 
         exit(1); 
     }
-    return fopen(path, mode);
+    return NULL;
 }
 
   // combines fprintf and flush into one function
@@ -70,11 +72,27 @@ FILE* initPWM(int pwm) {
 	writeToStream(pwmSet, "%s", "bone_pwm_P9_14");
     writeToStream(pwmSet, "%s", "bone_pwm_P8_19"); 
     char path[PATH_BUF];
+    char p8_path[1024];
+    char p9_path[1024]; 
+    FILE* fp;
+    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P8*\" -type d", "r");
+    usleep(10000);
+    fgets(p8_path, sizeof(p8_path), fp);
+    usleep(10000); 
+    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P9*\" -type d", "r");
+    usleep(10000);
+    usleep(1000); 
+    fgets(p9_path, sizeof(p9_path), fp);
+    usleep(10000); 
+    strtok(p8_path, "\n");
+    strtok(p9_path, "\n"); 
+    strcat(p9_path, "/");
+    strcat(p8_path, "/");
     // if path == 1, use EHRPWM2A
     if(pwm) {
-        sprintf(path, "%s", "/sys/devices/ocp.3/pwm_test_P8_19.16/");
+        sprintf(path, "%s", p8_path);
     } else { // path == 0 use EHRPWM1A
-        sprintf(path, "%s", "/sys/devices/ocp.3/pwm_test_P9_14.15/"); 
+        sprintf(path, "%s", p9_path); 
     }
     char ppath[PATH_BUF];
     char dpath[PATH_BUF];

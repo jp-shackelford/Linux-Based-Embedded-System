@@ -97,22 +97,3 @@ void brake_full(Motor * m0, Motor * m1) {
 	brake(m1);
 } 
 
-// for testing...
-int main() {
-    // instantiate motor with control pins 115 and 49
-    // pwm pin P8_19 (right side), and STBYpin 112 
-    Motor * m0 = malloc(sizeof(Motor));
-    motorinit(m0, 115, 49, 1, 112, 1);
-    Motor * m1 = malloc(sizeof(Motor));
-    motorinit(m1, 60,  48, 0, 112, 1); 
-    printf("%d%d%d%d%d\n", m0->IN1PIN, m0->IN2PIN, m0->STDBY, m0->PWM, m0->OFFSET);
-    int s;
-    for(s = 8; s >= 5; s --) {
-    	left(m0, m1, s);
-   		usleep(2000000);
-    	brake_full(m0, m1);
-    	usleep(1000000);
-    } 
-   	free(m0);
-    free(m1); 
-}

@@ -16,8 +16,14 @@
  // Note: if the path passed in doesn't or will never exist, getStream
  // will loop indefinetly
 FILE* getStream(char *path, char *mode) {
-    while(!fopen(path, mode)) {
+    int count = 0;
+    while(count != 1000) {
         usleep(1);
+        count++; 
+    }
+    if(!fopen(path, mode)) {
+        printf("File:%s wont open\n", path); 
+        exit(1); 
     }
     return fopen(path, mode);
 }

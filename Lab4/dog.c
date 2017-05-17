@@ -111,7 +111,7 @@ void timer_handler(int signal) {
   printf("adc_mvolt: %d\n", adc_mvolt); 
   if(adc_mvolt >= 900) {
     command = WAG; 
-  } else if (adc_mvolt >= 400 && adc_mvolt < 900){
+  } else if (adc_mvolt >= 200 && adc_mvolt < 900){
     command = FORWARD;
   } else {
     command = CIRCLE;

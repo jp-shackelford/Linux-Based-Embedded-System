@@ -64,8 +64,8 @@ void forward_speed(Motor *m0, Motor * m1, int speed) {
 }
 
 void forward(Motor *m0, Motor *m1) {
-  drive(m0, 8);
-  drive(m1, 8);
+  drive(m0, -8);
+  drive(m1, -8);
 }
 
 void back_speed(Motor *m0, Motor *m1, int speed) {

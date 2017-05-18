@@ -4,9 +4,11 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#define FORWARD 0
-#define BRAKE   1 
-
+#define HALTF   0
+#define FORWARD 1
+#define HALTB   2
+#define BACK    3
+#define MOV_THRESH 600
 void timer_Init();
 void timer_handler();
 struct sigaction sa;
@@ -21,9 +23,9 @@ char analog_path0[1024];
 char analog_path2[1024];
 char analog_path4[1024];
 char analog_path6[1024];
-int command = 50; 
 Motor * m0;
 Motor * m1;
+int state = 0; 
 
 int main() {
 	// intialize analog inputs 
@@ -62,12 +64,12 @@ int main() {
     printf("loading up some elbow grease...\n");
     timer_Init();
     while(1) {
-        if(command == FORWARD) {
-            forward_speed(m0, m1, 8);
-        } else if(command == BRAKE) {
+        if(state == HALTB || state == HALTF) {
             brake_full(m0, m1);
+        } else if(state == FORWARD) {
+            forward(m0, m1);
         } else {
-            brake_full(m0, m1); 
+            back(m0, m1);
         }
     }
    	
@@ -83,10 +85,10 @@ void timer_Init() {
 
    /* Configure the timer to expire after 250 msec... */
    timer.it_value.tv_sec = 0;
-   timer.it_value.tv_usec = 10000;
+   timer.it_value.tv_usec = 100000;
    /* ... and every 250 msec after that. */
    timer.it_interval.tv_sec = 0;
-   timer.it_interval.tv_usec = 10000;
+   timer.it_interval.tv_usec = 100000;
    /* Start a virtual timer. It counts down whenever this process is
      executing. */
    setitimer (ITIMER_VIRTUAL, &timer, NULL);
@@ -123,19 +125,48 @@ void timer_handler(int signal) {
   char uvalue[1024]; 
   fgets(uvalue, 1024, adc6);
 
-  int zero_mvolt = atoi(fvalue);
-  int two_mvolt  = atoi(bvalue);
-  int six_mvolt  = atoi(uvalue);
-  int four_mvolt = atoi(lvalue);
-  printf("Front %d Back %d topside %d UnderSide %d\n", zero_mvolt, two_mvolt, four_mvolt, six_mvolt);
-  switch(command) {
-    case SPINLEFT:
-    case FORWARD: 
-    case BACKWARD:
-    case SPINRIGHT:
-    default: 
-        break;
-  }
+  int back = atoi(fvalue); // front
+  int front  = atoi(bvalue); // back
+  int bottom  = atoi(uvalue); // bottom
+  int top = atoi(lvalue); // top
+  printf("Front %d Back %d Bottom %d Top %d\n",
+           front, back, bottom, top);
+
+  // If something is close to the top sensor or the bottom sensor moves out of normal range then stop
+  switch(state) {
+    case HALTF: if(top < 950) {
+                    state = HALTF;
+                } else if(top >= 950 && front < MOV_THRESH 
+                          && bottom > 700) {
+                    state = FORWARD;
+                } else {
+                    state = HALTF;
+                }
+                break;
+    case FORWARD: if(front < MOV_THRESH && bottom > 700) {
+                    state = FORWARD;
+                  } else {
+                    state = HALTB;
+                  }
+                  break;
+    case HALTB: if(top < 950) {
+                    state = HALTB;
+                } else if(top >= 950 && back < MOV_THRESH
+                          && bottom > 700) {
+                    state = BACK;
+                } else {
+                    state = HALTB;
+                }
+                break;
+    case BACK: if(back < MOV_THRESH & bottom > 700) {
+                    state = BACK;
+                } else {
+                    state = HALTF;
+                }
+                break;
+  }           
+  printf("State %d\n", state); 
+
   fclose(adc0); 
   fclose(adc2);
   fclose(adc4);

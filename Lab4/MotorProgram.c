@@ -12,8 +12,15 @@ void timer_handler();
 struct sigaction sa;
 struct itimerval timer; 
 int pid; 
-FILE* adc; 
+FILE* adc0;
+FILE* adc2;
+FILE* adc4;
+FILE* adc6;  
 char analog_path[1024];
+char analog_path0[1024];
+char analog_path2[1024];
+char analog_path4[1024];
+char analog_path6[1024];
 int command = 50; 
 Motor * m0;
 Motor * m1;
@@ -32,7 +39,14 @@ int main() {
     // remove newline 
     strtok(analog_path, "\n");
     // add in the file we're looking for 
-    strcat(analog_path, "/AIN0");
+    strcpy(analog_path0, analog_path);
+    strcpy(analog_path2, analog_path);
+    strcpy(analog_path4, analog_path);
+    strcpy(analog_path6, analog_path);
+    strcat(analog_path0, "/AIN0");
+    strcat(analog_path2, "/AIN2");
+    strcat(analog_path4, "/AIN4");
+    strcat(analog_path6, "/AIN6");
     fclose(fp);
     
     
@@ -89,18 +103,42 @@ void timer_handler(int signal) {
   	command = BRAKE;
   } */
   
-  // read value from adc 
-  adc = fopen(analog_path, "r");
-  char value[1024]; 
-  fgets(value, 1024, adc);
-  int adc_mvolt = atoi(value);
-  printf("adc_mvolt: %d\n", adc_mvolt); 
-  if(adc_mvolt >= 900) {
-        command = BRAKE; 
-  } else {
-        command = FORWARD;
+  // read value from adc 0
+  adc0 = fopen(analog_path0, "r");
+  char fvalue[1024]; 
+  fgets(fvalue, 1024, adc0);
+
+  // read value from adc 2 
+  adc2 = fopen(analog_path2, "r");
+  char bvalue[1024]; 
+  fgets(bvalue, 1024, adc2);
+
+   // read value from adc 4
+  adc4 = fopen(analog_path4, "r");
+  char lvalue[1024]; 
+  fgets(lvalue, 1024, adc4);
+
+   // read value from adc 6
+  adc6 = fopen(analog_path6, "r");
+  char uvalue[1024]; 
+  fgets(uvalue, 1024, adc6);
+
+  int zero_mvolt = atoi(fvalue);
+  int two_mvolt  = atoi(bvalue);
+  int six_mvolt  = atoi(uvalue);
+  int four_mvolt = atoi(lvalue);
+  printf("Front %d Back %d topside %d UnderSide %d\n", zero_mvolt, two_mvolt, four_mvolt, six_mvolt);
+  switch(command) {
+    case SPINLEFT:
+    case FORWARD: 
+    case BACKWARD:
+    case SPINRIGHT:
+    default: 
+        break;
   }
-  
-  fclose(adc); 
+  fclose(adc0); 
+  fclose(adc2);
+  fclose(adc4);
+  fclose(adc6);
   //sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock signals
 }

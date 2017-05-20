@@ -21,7 +21,10 @@ To compile and run the tank program, follow the commands below:
 Alternatively, the BeagleBone Black is programmed to run the tank program on startup. <br />
 Simply turn on the board and wait for the program to begin executing. This may take <br />
 as long as a minute to begin.
-
+<br />
+<br />
+<br />
+<br />
 
 
 

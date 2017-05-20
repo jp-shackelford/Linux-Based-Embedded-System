@@ -1,3 +1,30 @@
+Lab 4 - EE 474 <br />
+In this lab we implemented proximity sensors to direct the patterns of our <br />
+robo-tank's driving. The motors of the tank were driven by an H-bridge chip wired <br />
+to our solderless breadboard. There are four sensors on our tank: a front sensor, <br />
+a bottom sensor, and a top sensor. These four optical sensors work in tandem to <br />
+alert our tank to any external obstacles. <br />
+
+The program we wrote to control its movement is MotorProgram.c. With this program, <br />
+the tank will begin moving forward when it senses an object close above it. <br />
+It will drive forward until it senses another object in its path and then halt. <br />
+It again waits for an object to appear above it before driving back the opposite <br />
+direction until it reaches a wall or some other object in its path. The tank will <br />
+also stop trying to drive if it gets picked up. <br />
+
+To compile and run the tank program, follow the commands below:
+1. Compile the program with the Makefile by typing <br />
+    $ make
+2. Run the program with 
+    $ ./motor
+
+Alternatively, the BeagleBone Black is programmed to run the tank program on startup. <br />
+Simply turn on the board and wait for the program to begin executing. This may take <br />
+as long as a minute to begin.
+
+
+
+
 Lab 3 - EE 474 <br />
 This lab introduced the use of Loadable Kernel Modules and the interaction <br />
 beteween user-space code and kernel-space code. A shift register was also implemented <br />

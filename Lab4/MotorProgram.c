@@ -9,8 +9,10 @@
 #define HALTB   2
 #define BACK    3
 #define MOV_THRESH 600
+
 void timer_Init();
 void timer_handler();
+
 struct sigaction sa;
 struct itimerval timer; 
 int pid; 
@@ -95,15 +97,6 @@ void timer_Init() {
 }
 
 void timer_handler(int signal) {
-  /* COMMENTING THIS OUTE FOR NOW 
-  sigset_t mask;
-  sigfillset(&mask);
-  sigdelset(&mask, SIGINT); // Block everyting except sigint (^C)
-  sigprocmask(SIG_BLOCK, &mask, NULL);
-  
-  if (signal == SIGINT) {
-  	command = BRAKE;
-  } */
   
   // read value from adc 0
   adc0 = fopen(analog_path0, "r");

@@ -6,25 +6,34 @@
 #include <string.h>
 
 #include "TankHeader.h"
+#include "MotorLibrary.c" 
 
 int shots = 5;
+Motor * m0;
+Motor * m1;
 
-int readButton(int press) {
-	if (press == 'q') { // if ESC
+void reload() {
+	int i=0;
+	for (i=1; i<5; i++) {
+		sleep(1);
+		printf("%s", ". ");
+	}
+	sleep(1);
+	printf("%s\n", ".");
+}
+
+int readButton(char press) {
+	if (press == 'q') { // To quit program
 		printf("%s\n", "quitting");
 		exit(EXIT_SUCCESS);
 		return QUIT;
 	} else if (press == 'w' || press == 'W') {
-		printf("%s\n", "UP");
 		return FORWARD;
 	} else if (press == 'a' || press == 'A') {
-		printf("%s\n", "LEFT");
 		return TURN_LEFT;
 	} else if (press == 's' || press == 'S') {
-		printf("%s\n", "DOWN");
 		return BACKWARD;
 	} else if (press == 'd' || press == 'D') {
-		printf("%s\n", "RIGHT");
 		return TURN_RIGHT;
 	} else if (press == 'f' || press == 'F') {
 		if (shots > 0) {
@@ -36,13 +45,15 @@ int readButton(int press) {
 			return NO_ACTION;
 		}
 	} else if (press == 'r' || press == 'R') {
-		if (shots < CAP) {
+		if (shots < CAP && shots != CAP) {
 			printf("%s\n", "Reloading");
-			sleep(5);
+			reload();
 			shots = 5;
 			printf("%s\n", "Done reloading");
 		}
 		return NO_ACTION;
+	} else if (press == 'b' || press == 'B') {
+		return BRAKE;
 	} else {
 		return NO_ACTION;
 	}
@@ -51,9 +62,8 @@ int readButton(int press) {
 
 int main() {
 	int fd = open("/dev/ttyO1", O_RDWR);
-	printf("%d\n", fd);
 	char receive[2];
-	char buf[20];
+	char buf[50];
 	size_t nbytes;
 	ssize_t bytes_written;
 	
@@ -66,18 +76,61 @@ int main() {
 	tcflush(fd, TCIFLUSH);
 	tcsetattr(fd, TCSANOW, &options);
 	
-	strcpy(buf, "Hello there!\n");
+	// Set up drive motors
+    	m0 = malloc(sizeof(Motor));
+    	motorinit(m0, 115, 49, 1, 112, 1);
+    	m1 = malloc(sizeof(Motor));
+    	motorinit(m1, 60,  48, 0, 112, 1); 
+
+	strcpy(buf, "Done initializing\n");
 	write(fd, buf, strlen(buf));
-	
-	sleep(2);
-	strcpy(buf, "Bye for now\n");
-	write(fd, buf, strlen(buf));
-	
-	printf("%s\n", "gonna try reading here...");
+	tcflush(fd, TCOFLUSH); // Flush output buffer
+
+	int prevAction = 0;
 	while (1) {
-		tcflush(fd, TCIFLUSH);
+		
+		tcflush(fd, TCIFLUSH); // Flush input buffer before each read
+		printf("I'm preparing to receive: \n");
 		read(fd, receive, 1); // Read only first char
 		printf("%s\n", receive);
+		int action = readButton(receive[0]);
+		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
+			if (action == FORWARD && prevAction == BACKWARD) {
+				brake_full(m0,m1);
+			} else if (action == BACKWARD && prevAction == FORWARD) {
+				brake_full(m0,m1);
+			} else if (action == LEFT && prevAction == RIGHT){
+				brake_full(m0,m1);
+			} else if (action == RIGHT && prevAction == LEFT){
+				brake_full(m0,m1);
+			} else {
+				// Find action to perfrom
+				switch(action) {
+					case FORWARD :
+						forward(m0,m1);
+						break;
+					case BACKWARD :
+						back(m0,m1);
+						break;
+					case LEFT :
+						left(m0, m1, -8);
+						break;
+					case RIGHT : 
+						right(m0, m1, -8);
+						break;
+					case FIRE :
+						printf("Will fire here...\n");
+						break;
+					case BRAKE :
+						brake_full(m0,m1);
+						break;
+						
+				}
+				// Print action to the console
+				printf("%s%d\n", "Will do ", action);
+			}
+		}
+		prevAction = action; // Store action
 	}
 }
 

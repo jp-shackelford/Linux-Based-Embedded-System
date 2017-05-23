@@ -5,12 +5,10 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include "BB_Library.c"
-
-
 int main() {
-	FILE* fd = getStream("/dev/ttyO1", O_RDWR);
-	char receive[100];
+	int fd = open("/dev/ttyO1", O_RDWR);
+	printf("%d\n", fd);
+	char receive[10];
 	char buf[20];
 	size_t nbytes;
 	ssize_t bytes_written;
@@ -24,16 +22,18 @@ int main() {
 	tcflush(fd, TCIFLUSH);
 	tcsetattr(fd, TCSANOW, &options);
 	
-	strcpy(buf, "$$$\n");
-	nbytes = strlen(buf);
+	strcpy(buf, "Hello there!\n");
+	write(fd, buf, strlen(buf));
 	
+	sleep(5);
+	strcpy(buf, "Bye for now\n");
+	write(fd, buf, strlen(buf));
+	
+	printf("%s\n", "gonna try reading here...");
 	while (1) {
-		writeToStream(fd, buf, nbytes);
-		printf("%ld\n", bytes_written);
-		//read(fd, receive, sizeof(receive));
+		read(fd, receive, sizeof(receive));
 		printf("%s\n", receive);
-		sleep(2);
+		sleep(1);
 	}
-	close(fd);
 }
 

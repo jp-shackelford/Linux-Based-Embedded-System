@@ -12,19 +12,31 @@ int shots = 5;
 Motor * m0;
 Motor * m1;
 
-void reload() {
+void reload(int fd) {
 	int i=0;
-	for (i=1; i<5; i++) {
+	char message[4];
+	
+	for (i=0; i<shots; i++) {
+		strcat(message, " . ");
+		write(fd, message, strlen(message));
+	}
+	
+	for (i=shots; i<4; i++) {
 		sleep(1);
-		printf("%s", ". ");
+		strcpy(message, " . ");
+		write(fd, message, strlen(message));
 	}
 	sleep(1);
-	printf("%s\n", ".");
+	strcpy(message, " . \n");
+	write(fd, message, strlen(message));
 }
 
-int readButton(char press) {
+int readButton(char press, int fd) {
+	char message[32];
+	
 	if (press == 'q') { // To quit program
-		printf("%s\n", "quitting");
+		strcpy(message, "Quitting now \n");
+		write(fd, message, strlen(message));
 		exit(EXIT_SUCCESS);
 		return QUIT;
 	} else if (press == 'w' || press == 'W') {
@@ -37,19 +49,30 @@ int readButton(char press) {
 		return TURN_RIGHT;
 	} else if (press == 'f' || press == 'F') {
 		if (shots > 0) {
-			shots--;
-			printf("%s%d\n", "FIRE!            ", shots);
+			//shots--;
+			//sprintf(message, "%s%d%s\n", "Fire!    ", shots, " shots left. ");
+			strcpy(message, "Fire! \n");
+			write(fd, message, strlen(message));
 			return FIRE;
 		} else {
-			printf("%s\n", "out of ammo! Must reload");
+			strcpy(message, "out of ammo! Must reload \n");
+			write(fd, message, strlen(message));
 			return NO_ACTION;
 		}
 	} else if (press == 'r' || press == 'R') {
+		
+		/* SHOTS AND RELOADING CURRENTLY DISABLED */
+		strcpy(message, "Reload temporarily disabled \n");
+		write(fd, message, strlen(message));
+		
+		return NO_ACTION;
 		if (shots < CAP && shots != CAP) {
-			printf("%s\n", "Reloading");
-			reload();
+			strcpy(message, "Reloading... \n");
+			write(fd, message, strlen(message));
+			reload(fd);
 			shots = 5;
-			printf("%s\n", "Done reloading");
+			strcpy(message, "Done reloading \n");
+			write(fd, message, strlen(message));
 		}
 		return NO_ACTION;
 	} else if (press == 'b' || press == 'B') {
@@ -57,6 +80,8 @@ int readButton(char press) {
 	} else {
 		return NO_ACTION;
 	}
+	
+	tcflush(fd, TCOFLUSH); // Flush output buffer
 }
 
 
@@ -83,7 +108,7 @@ int main() {
     motorinit(m1, 60,  48, 0, 112, 1); 
 
 	strcpy(buf, "Ready!\n");
-	write(fd, buf, strlen(buf)+1);
+	write(fd, buf, strlen(buf));
 	tcflush(fd, TCOFLUSH); // Flush output buffer
 	
 	int action = 0;
@@ -93,7 +118,7 @@ int main() {
 		// Read the input
 		read(fd, receive, 2);
 		
-		action = readButton(receive[0]); // Only look at first char
+		action = readButton(receive[0], fd); // Only look at first char
 		
 		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
 			
@@ -124,7 +149,8 @@ int main() {
 						right(m0, m1, 8);
 						break;
 					case FIRE :
-						printf("Will fire here...\n");
+						printf("   <Will fire here...>   \n");
+						
 						break;
 					case BRAKE :
 						brake_full(m0,m1);

@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <signal.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "TankHeader.h"
 #include "MotorLibrary.c" 
@@ -85,36 +88,64 @@ int readButton(char press, int fd) {
 }
 
 
+void handler(int sig) {
+	sigset_t mask;
+	sigfillset(&mask);
+	sigprocmask(SIG_BLOCK, &mask, NULL); // Block all signals so we process one at a time
+	
+	if (sig == SIGUSR1) {
+		printf("HIT!\n");
+	} 	
+	//usleep(100000);
+	sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock all signals
+}
+
+
 int main() {
 	int fd = open("/dev/ttyO1", O_RDWR);
 	char receive[2];
 	char buf[50];
-	size_t nbytes;
-	ssize_t bytes_written;
 	
+
+	// Set up serial comm options
 	struct termios options;
 	tcgetattr(fd, &options);
-	
-	// Set up serial comm options
 	options.c_cflag = B115200 | CS8 | CREAD | CLOCAL; // 115200 Baud, 8 data bits
 	options.c_iflag = IGNPAR | ICRNL; // Ignore parity bits
 	tcflush(fd, TCIFLUSH);
 	tcsetattr(fd, TCSANOW, &options);
+
+
+	// Set up process ID and shared memory
+	pid_t pid = getpid();
+	key_t MyKey;
+	MyKey = ftok(".", 's');
+	int ShmID   = shmget(MyKey, sizeof(pid_t), IPC_CREAT | 0666);
+    pid_t * ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
+    *ShmPTR = pid;
+
+    if (signal(SIGUSR1, handler) == -1) {
+		printf("SIGUSR1 install error\n");
+		raise(SIGKILL);
+	}
 	
+
 	// Set up drive motors
     m0 = malloc(sizeof(Motor));
     motorinit(m0, 115, 49, 1, 112, 1);
    	m1 = malloc(sizeof(Motor));
     motorinit(m1, 60,  48, 0, 112, 1); 
 
+
 	strcpy(buf, "Ready!\n");
 	write(fd, buf, strlen(buf));
 	tcflush(fd, TCOFLUSH); // Flush output buffer
 	
+
+
 	int action = 0;
 	int prevAction = 0;
 	while (1) {
-		
 		// Read the input
 		read(fd, receive, 2);
 		

@@ -5,15 +5,15 @@
 #include <time.h>
 #include <sys/time.h>
 
+#define ADC_PATH "/sys/devices/ocp.3/helper.15/AIN0"
+#define THRESHOLD 100
+
 FILE* adc1;
 char analog_path[1024];
 struct sigaction sa;
 struct itimerval timer; 
-int pid; 
 
 void timer_Init();
-void timer_handler(int signal);
-
 
 int main() {
 	FILE* slots = getStream("/sys/devices/bone_capemgr.9/slots", "w");
@@ -25,47 +25,48 @@ int main() {
 	usleep(1000);
 
 	strtok(analog_path, "\n");
-
-	strcat(analog_path, "/AIN1");
+	strcat(analog_path, "/AIN0");
 
 	fclose(fp);
 
-	timer_Init();
+	pid_t pid;
+	key_t MyKey;
+	pid_t *ShmPTR;
 
+	MyKey   = ftok(".", 's');        
+    pid_t ShmID   = shmget(MyKey, sizeof(pid_t), 0666);
+    ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
+    pid = *ShmPTR;                
+    shmdt(ShmPTR);
+
+    printf("My pid is %d\n", pid);
+
+    while(1) {
+    	// If reading is ever past threshold
+    	if (readADC() > THRESHOLD) {
+    		kill(pid, SIGUSR1); // Send signal to other process
+    		while (readADC() > THRESHOLD); // Wait until we drop below threshold (unhit)
+    	}
+    }
+
+    return 0;
 }
 
-void timer_Init() {
-	memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = &timer_handler;
-	sigaction (SIGVTALRM, &sa, NULL);
-	sigaction (SIGINT, &sa, NULL);
-
-	/* Configure the timer to expire after 250 msec... */
-	timer.it_value.tv_sec = 0;
-	timer.it_value.tv_usec = 100000;
-	/* ... and every 250 msec after that. */
-	timer.it_interval.tv_sec = 0;
-	timer.it_interval.tv_usec = 100000;
-	/* Start a virtual timer. It counts down whenever this process is
-	executing. */
-	setitimer (ITIMER_VIRTUAL, &timer, NULL);
-}
-
-
-void timer_handler(int signal) {
-
-	// read value from adc 1
-	adc1 = fopen(analog_path, "r");
-	char value[1024];
-	fgets(value, 1024, adc1);
-
-
-	int hit_val = atoi(value); // hit sensor
-	printf("Hit Value: %d \n", hit_val);
-
-	if(hit_val > 100) {
-		printf("HIT!!\n");
-	}
-
-	fclose(adc1);
+// Reads the value on an analog pin and returns it as an int
+int readADC() {  
+    int fd;
+    char buf[64]; 
+    char val[4];     //holds up to 4 digits for ADC value  
+      
+      
+    fd = open(ADC_PATH, O_RDONLY);
+    if (fd < 0) {  
+        printf("Error: Can't open ADC\n");
+        exit(1);
+    }
+      
+    read(fd, &val, 4);     //read ADC val (up to 4 digits 0-1799)  
+    close(fd);     //close file and stop reading  
+      
+    return atoi(val);     //returns an integer value (rather than ascii)  
 }

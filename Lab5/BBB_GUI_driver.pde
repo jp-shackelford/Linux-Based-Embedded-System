@@ -57,8 +57,15 @@ text("X: Fire", 65, 225);
  
 void keyPressed()
 {
- 
- 
+  byte[] inBuffer = new byte[7];
+  while (myPort.available() > 0) {
+    inBuffer = myPort.readBytes();
+    myPort.readBytes(inBuffer);
+    if (inBuffer != null) {
+      String myString = new String(inBuffer);
+      println(myString);
+    }
+  }  
   switch (keyCode) { //Switch case: Sending different signals and filling different arrows red according to which button was pressed.   
     case UP: //In case the UP button was pressed:
        myPort.write("w\n"); // Send the signal 1

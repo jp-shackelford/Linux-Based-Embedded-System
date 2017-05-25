@@ -77,32 +77,37 @@ int main() {
 	tcsetattr(fd, TCSANOW, &options);
 	
 	// Set up drive motors
-    	m0 = malloc(sizeof(Motor));
-    	motorinit(m0, 115, 49, 1, 112, 1);
-    	m1 = malloc(sizeof(Motor));
-    	motorinit(m1, 60,  48, 0, 112, 1); 
+    m0 = malloc(sizeof(Motor));
+    motorinit(m0, 115, 49, 1, 112, 1);
+   	m1 = malloc(sizeof(Motor));
+    motorinit(m1, 60,  48, 0, 112, 1); 
 
-	strcpy(buf, "Done initializing\n");
-	write(fd, buf, strlen(buf));
+	strcpy(buf, "Ready!\n");
+	write(fd, buf, strlen(buf)+1);
 	tcflush(fd, TCOFLUSH); // Flush output buffer
-
+	
+	int action = 0;
 	int prevAction = 0;
 	while (1) {
 		
-		tcflush(fd, TCIFLUSH); // Flush input buffer before each read
-		printf("I'm preparing to receive: \n");
-		read(fd, receive, 1); // Read only first char
-		printf("%s\n", receive);
-		int action = readButton(receive[0]);
+		// Read the input
+		read(fd, receive, 2);
+		
+		action = readButton(receive[0]); // Only look at first char
+		
 		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
-			if (action == FORWARD && prevAction == BACKWARD) {
+			
+			printf("%s%d%s%d\n", "My action is: ", action, "	My prevAction was: ", prevAction);
+			
+			// If you're going one way and then you try to do the opposite, brake
+			if ((action == FORWARD && prevAction == BACKWARD) ||
+					(action == BACKWARD && prevAction == FORWARD) ||
+					(action == TURN_LEFT && prevAction == TURN_RIGHT) ||
+					(action == TURN_RIGHT && prevAction == TURN_LEFT)){
+				
 				brake_full(m0,m1);
-			} else if (action == BACKWARD && prevAction == FORWARD) {
-				brake_full(m0,m1);
-			} else if (action == LEFT && prevAction == RIGHT){
-				brake_full(m0,m1);
-			} else if (action == RIGHT && prevAction == LEFT){
-				brake_full(m0,m1);
+				prevAction = BRAKE; // So this gets stored in prevAction
+
 			} else {
 				// Find action to perfrom
 				switch(action) {
@@ -112,11 +117,11 @@ int main() {
 					case BACKWARD :
 						back(m0,m1);
 						break;
-					case LEFT :
-						left(m0, m1, -8);
+					case TURN_LEFT :
+						left(m0, m1, 8);
 						break;
-					case RIGHT : 
-						right(m0, m1, -8);
+					case TURN_RIGHT : 
+						right(m0, m1, 8);
 						break;
 					case FIRE :
 						printf("Will fire here...\n");
@@ -126,11 +131,9 @@ int main() {
 						break;
 						
 				}
-				// Print action to the console
-				printf("%s%d\n", "Will do ", action);
+				prevAction = action; // Store this action
 			}
 		}
-		prevAction = action; // Store action
 	}
 }
 

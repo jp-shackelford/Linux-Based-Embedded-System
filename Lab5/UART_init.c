@@ -1,21 +1,12 @@
-#include <termios.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-#include <signal.h>
-#include <time.h>
-#include <sys/time.h>
-
 #include "TankHeader.h"
 #include "MotorLibrary.c" 
 
 int shots = 5;
+int fd;
 Motor * m0;
 Motor * m1;
 
-void reload(int fd) {
+void reload() {
 	int i=0;
 	char message[4];
 	
@@ -34,7 +25,7 @@ void reload(int fd) {
 	write(fd, message, strlen(message));
 }
 
-int readButton(char press, int fd) {
+int readButton(char press) {
 	char message[32];
 	
 	if (press == 'q') { // To quit program
@@ -83,8 +74,7 @@ int readButton(char press, int fd) {
 	} else {
 		return NO_ACTION;
 	}
-	
-	tcflush(fd, TCOFLUSH); // Flush output buffer
+
 }
 
 
@@ -93,17 +83,22 @@ void handler(int sig) {
 	sigfillset(&mask);
 	sigprocmask(SIG_BLOCK, &mask, NULL); // Block all signals so we process one at a time
 	
+	char message[5];
+	strcpy(message, "HIT!\n");
+	
+	printf(message);
+	
 	if (sig == SIGUSR1) {
-		printf("HIT!\n");
+		write(fd, message, strlen(message));
 	} 	
-	//usleep(100000);
+
 	sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock all signals
 }
 
 
 int main() {
-	int fd = open("/dev/ttyO1", O_RDWR);
-	char receive[2];
+	fd = open("/dev/ttyO1", O_RDWR);
+	char receive[100];
 	char buf[50];
 	
 
@@ -123,6 +118,8 @@ int main() {
 	int ShmID   = shmget(MyKey, sizeof(pid_t), IPC_CREAT | 0666);
     pid_t * ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
     *ShmPTR = pid;
+    
+    printf("%s%d\n", "My PID is: ", pid);
 
     if (signal(SIGUSR1, handler) == -1) {
 		printf("SIGUSR1 install error\n");
@@ -147,9 +144,9 @@ int main() {
 	int prevAction = 0;
 	while (1) {
 		// Read the input
-		read(fd, receive, 2);
+		read(fd, receive, sizeof(receive));
 		
-		action = readButton(receive[0], fd); // Only look at first char
+		action = readButton(receive[0]); // Only look at first char
 		
 		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
 			

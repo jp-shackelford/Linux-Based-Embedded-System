@@ -1,6 +1,5 @@
 CC=gcc
-SOURCES=UART_init.c 
-EXECUTABLE=tank
+EXECUTABLE=tank sensor
 
 all: tank sensor
 

@@ -5,6 +5,12 @@
 #include <string.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/time.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
 
 
 #define LEFT  68

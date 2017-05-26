@@ -8,13 +8,12 @@
 #include <fcntl.h>
 #include "BB_Library.c"
 
-#define ADC_PATH "/sys/devices/ocp.3/helper.15/AIN0"
-#define THRESHOLD 100
+#define ADC_PATH "/sys/devices/ocp.3/helper.17/AIN0"
+#define THRESHOLD 1000
 
 FILE* adc1;
 char analog_path[1024];
 struct sigaction sa;
-struct itimerval timer; 
 
 int main() {
 	FILE* slots = getStream("/sys/devices/bone_capemgr.9/slots", "w");
@@ -39,14 +38,16 @@ int main() {
     ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
     pid = *ShmPTR;                
     shmdt(ShmPTR);
-
+	
     printf("My pid is %d\n", pid);
-
+	
     while(1) {
     	// If reading is ever past threshold
     	if (readADC() > THRESHOLD) {
+    		printf("%s\n", "above threshold");
     		kill(pid, SIGUSR1); // Send signal to other process
-    		while (readADC() > THRESHOLD); // Wait until we drop below threshold (unhit)
+    		while (readADC() > THRESHOLD);
+    		printf("%s\n", "all clear");
     	}
     }
 

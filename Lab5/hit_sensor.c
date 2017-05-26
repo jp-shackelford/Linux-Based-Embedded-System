@@ -1,9 +1,12 @@
-#include "BB_Library.c"
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <string.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include "BB_Library.c"
 
 #define ADC_PATH "/sys/devices/ocp.3/helper.15/AIN0"
 #define THRESHOLD 100
@@ -12,8 +15,6 @@ FILE* adc1;
 char analog_path[1024];
 struct sigaction sa;
 struct itimerval timer; 
-
-void timer_Init();
 
 int main() {
 	FILE* slots = getStream("/sys/devices/bone_capemgr.9/slots", "w");

@@ -2,8 +2,12 @@ CC=gcc
 SOURCES=UART_init.c 
 EXECUTABLE=tank
 
-tank: $(SOURCES)
-	$(CC) -o tank UART_init.c hit_sensor.c
+all: tank sensor
+
+tank: UART_init.c
+	$(CC) -o $@ $^
+sensor: hit_sensor.c
+	$(CC) -o $@ $^
 
 .PHONY: clean
 

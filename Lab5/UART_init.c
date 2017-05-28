@@ -1,37 +1,15 @@
 #include "TankHeader.h"
 #include "MotorLibrary.c" 
 
-int shots = 5;
 int fd;
 Motor * m0;
 Motor * m1;
-
-void reload() {
-	int i=0;
-	char message[4];
-	
-	for (i=0; i<shots; i++) {
-		strcat(message, " . ");
-		write(fd, message, strlen(message));
-	}
-	
-	for (i=shots; i<4; i++) {
-		sleep(1);
-		strcpy(message, " . ");
-		write(fd, message, strlen(message));
-	}
-	sleep(1);
-	strcpy(message, " . \n");
-	write(fd, message, strlen(message));
-}
+FILE * hitLED;
+int firedisable;
 
 int readButton(char press) {
-	char message[32];
 	
-	if (press == 'q') { // To quit program
-		strcpy(message, "Quitting now \n");
-		write(fd, message, strlen(message));
-		exit(EXIT_SUCCESS);
+	if (press == 'q' || press == 'Q') { // To quit program
 		return QUIT;
 	} else if (press == 'w' || press == 'W') {
 		return FORWARD;
@@ -42,33 +20,7 @@ int readButton(char press) {
 	} else if (press == 'd' || press == 'D') {
 		return TURN_RIGHT;
 	} else if (press == 'f' || press == 'F') {
-		if (shots > 0) {
-			//shots--;
-			//sprintf(message, "%s%d%s\n", "Fire!    ", shots, " shots left. ");
-			strcpy(message, "Fire! \n");
-			write(fd, message, strlen(message));
-			return FIRE;
-		} else {
-			strcpy(message, "out of ammo! Must reload \n");
-			write(fd, message, strlen(message));
-			return NO_ACTION;
-		}
-	} else if (press == 'r' || press == 'R') {
-		
-		/* SHOTS AND RELOADING CURRENTLY DISABLED */
-		strcpy(message, "Reload temporarily disabled \n");
-		write(fd, message, strlen(message));
-		
-		return NO_ACTION;
-		if (shots < CAP && shots != CAP) {
-			strcpy(message, "Reloading... \n");
-			write(fd, message, strlen(message));
-			reload(fd);
-			shots = 5;
-			strcpy(message, "Done reloading \n");
-			write(fd, message, strlen(message));
-		}
-		return NO_ACTION;
+		return FIRE;
 	} else if (press == 'b' || press == 'B') {
 		return BRAKE;
 	} else {
@@ -83,15 +35,28 @@ void handler(int sig) {
 	sigfillset(&mask);
 	sigprocmask(SIG_BLOCK, &mask, NULL); // Block all signals so we process one at a time
 	
-	char message[5];
-	strcpy(message, "HIT!\n");
+	char message[50];
 	
-	printf(message);
 	
 	if (sig == SIGUSR1) {
+		firedisable = 1;
+		//writeToStream(hitLED, "%d", 1);
+		strcpy(message, "HIT! Fire is temporarily disabled\n");
+		printf(message);
 		write(fd, message, strlen(message));
-	} 	
-
+	 	alarm(4); // Set 2 second timer that will disable our fire button
+	} else if (sig == SIGALRM) {
+		//writeToStream(hitLED, "%d", 0);
+		firedisable = 0; // after alarm goes off reenable firing
+		strcpy(message, "Fire is re-enabled!\n");
+		printf(message);
+		write(fd, message, strlen(message));
+	} else if (sig == SIGINT) {
+		printf("	QUITTING\n");
+		raise(SIGKILL);
+	}
+	
+	//printf("%s%d\n", "firedisable (handler): ", firedisable);
 	sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock all signals
 }
 
@@ -101,7 +66,12 @@ int main() {
 	char receive[100];
 	char buf[50];
 	
-
+	/*
+	hitLED = initGPIO(66);
+	writeToStream(hitLED, "%d", 1);
+	printf("wrote to stream\n");
+	*/
+	
 	// Set up serial comm options
 	struct termios options;
 	tcgetattr(fd, &options);
@@ -116,13 +86,25 @@ int main() {
 	key_t MyKey;
 	MyKey = ftok(".", 's');
 	int ShmID   = shmget(MyKey, sizeof(pid_t), IPC_CREAT | 0666);
-    pid_t * ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
+	
+	//printf("%s%d\n", "ShmID is ", ShmID);
+	
+    pid_t* ShmPTR  = (pid_t*) shmat(ShmID, NULL, 0);
     *ShmPTR = pid;
     
-    printf("%s%d\n", "My PID is: ", pid);
-
+    printf("%s%d\n", "Tank PID is: ", pid);
+	
+	// Setup signal handler
     if (signal(SIGUSR1, handler) == -1) {
 		printf("SIGUSR1 install error\n");
+		raise(SIGKILL);
+	}
+	if (signal(SIGALRM, handler) == -1) {
+		printf("SIGALRM install error\n");
+		raise(SIGKILL);
+	}
+	if (signal(SIGINT, handler) == -1) {
+		printf("SIGINT install error\n");
 		raise(SIGKILL);
 	}
 	
@@ -139,18 +121,19 @@ int main() {
 	tcflush(fd, TCOFLUSH); // Flush output buffer
 	
 
-
 	int action = 0;
 	int prevAction = 0;
 	while (1) {
+	
+		char message[100]; // For outgoing messages
+	
 		// Read the input
 		read(fd, receive, sizeof(receive));
-		
 		action = readButton(receive[0]); // Only look at first char
 		
 		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
 			
-			printf("%s%d%s%d\n", "My action is: ", action, "	My prevAction was: ", prevAction);
+			//printf("%s%d%s%d\n", "My action is: ", action, "	My prevAction was: ", prevAction);
 			
 			// If you're going one way and then you try to do the opposite, brake
 			if ((action == FORWARD && prevAction == BACKWARD) ||
@@ -177,16 +160,27 @@ int main() {
 						right(m0, m1, 8);
 						break;
 					case FIRE :
-						printf("   <Will fire here...>   \n");
-						
+						//printf("%s%d\n", "firedisable: ", firedisable);
+						if (!firedisable)
+							printf("   <Will fire here...>   \n");
+						else 
+							printf("Fire is disabled!\n");
 						break;
 					case BRAKE :
 						brake_full(m0,m1);
 						break;
 						
 				}
-				prevAction = action; // Store this action
+				if (action != 5) // Don't care about storing a fire
+					prevAction = action; // Store this action
 			}
+		} else if (action == QUIT) {
+			strcpy(message, "Quitting now \n");
+			write(fd, message, strlen(message));
+			standby(m0);
+			standby(m1);
+			raise(SIGKILL); // Kill this process
+			exit(EXIT_SUCCESS);
 		}
 	}
 }

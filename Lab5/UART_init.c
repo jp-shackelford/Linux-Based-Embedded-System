@@ -2,10 +2,33 @@
 #include "MotorLibrary.c" 
 
 int fd;
-Motor * m0;
-Motor * m1;
-FILE * hitLED;
+Motor* m0;
+Motor* m1;
+FILE* HIT_LED;
+FILE* LASER;
+FILE* LASER2;
+FILE* PWM; 
 int firedisable;
+int lives = 3;
+
+void endgame() {
+	brake_full(m0, m1);
+	int i;
+	writeToStream(PWM, "%d", "100000");
+	usleep(500000);
+	writeToStream(PWM, "%d", "0");
+	usleep(500000);
+	writeToStream(PWM, "%d", "100000");
+	usleep(500000);
+	writeToStream(PWM, "%d", "0");
+	usleep(500000);
+	writeToStream(PWM, "%d", "100000");
+	usleep(2000000);
+	writeToStream(PWM, "%d", "0");
+	printf("is anyone listnanang?\n"); 
+	exit(0);
+}
+
 
 int readButton(char press) {
 	
@@ -29,7 +52,6 @@ int readButton(char press) {
 
 }
 
-
 void handler(int sig) {
 	sigset_t mask;
 	sigfillset(&mask);
@@ -40,13 +62,23 @@ void handler(int sig) {
 	
 	if (sig == SIGUSR1) {
 		firedisable = 1;
-		//writeToStream(hitLED, "%d", 1);
-		strcpy(message, "HIT! Fire is temporarily disabled\n");
-		printf(message);
-		write(fd, message, strlen(message));
-	 	alarm(4); // Set 2 second timer that will disable our fire button
+		writeToStream(HIT_LED, "%d", "1");
+		
+		if (lives == 0) {
+			endgame();
+		} else {
+			lives--;
+			printf("%s%d\n", "Lives: ", lives);
+			writeToStream(PWM, "%d", "80000"); 
+			strcpy(message, "HIT! Fire is temporarily disabled\n");
+			printf(message);
+			write(fd, message, strlen(message));
+			alarm(1); // Set 1 second timer that will disable our fire button
+		}
+
 	} else if (sig == SIGALRM) {
-		//writeToStream(hitLED, "%d", 0);
+		writeToStream(HIT_LED, "%d", "0");
+	    writeToStream(PWM, "%d", "0"); 
 		firedisable = 0; // after alarm goes off reenable firing
 		strcpy(message, "Fire is re-enabled!\n");
 		printf(message);
@@ -62,15 +94,17 @@ void handler(int sig) {
 
 
 int main() {
+
 	fd = open("/dev/ttyO1", O_RDWR);
 	char receive[100];
 	char buf[50];
 	
-	/*
-	hitLED = initGPIO(66);
-	writeToStream(hitLED, "%d", 1);
-	printf("wrote to stream\n");
-	*/
+	
+	HIT_LED = initGPIO(66);
+	LASER = initGPIO(69);
+	LASER2 = initGPIO(45);
+	PWM = initPWM(3); 
+	
 	
 	// Set up serial comm options
 	struct termios options;
@@ -79,20 +113,7 @@ int main() {
 	options.c_iflag = IGNPAR | ICRNL; // Ignore parity bits
 	tcflush(fd, TCIFLUSH);
 	tcsetattr(fd, TCSANOW, &options);
-
-
-	// Set up process ID and shared memory
-	pid_t pid = getpid();
-	key_t MyKey;
-	MyKey = ftok(".", 's');
-	int ShmID   = shmget(MyKey, sizeof(pid_t), IPC_CREAT | 0666);
 	
-	//printf("%s%d\n", "ShmID is ", ShmID);
-	
-    pid_t* ShmPTR  = (pid_t*) shmat(ShmID, NULL, 0);
-    *ShmPTR = pid;
-    
-    printf("%s%d\n", "Tank PID is: ", pid);
 	
 	// Setup signal handler
     if (signal(SIGUSR1, handler) == -1) {
@@ -126,10 +147,15 @@ int main() {
 	while (1) {
 	
 		char message[100]; // For outgoing messages
-	
+		writeToStream(LASER, "%d", "0");
+		writeToStream(LASER2, "%d", "0");
+		writeToStream(PWM, "%d", "0");
+		
 		// Read the input
 		read(fd, receive, sizeof(receive));
 		action = readButton(receive[0]); // Only look at first char
+		
+		
 		
 		if (action > 0) { // Didn't get NO_ACTION or QUIT, so interpret
 			
@@ -144,7 +170,7 @@ int main() {
 				brake_full(m0,m1);
 				prevAction = BRAKE; // So this gets stored in prevAction
 
-			} else {
+			} else if(lives != -1) {
 				// Find action to perfrom
 				switch(action) {
 					case FORWARD :
@@ -161,18 +187,22 @@ int main() {
 						break;
 					case FIRE :
 						//printf("%s%d\n", "firedisable: ", firedisable);
-						if (!firedisable)
-							printf("   <Will fire here...>   \n");
-						else 
+						if (!firedisable) {
+							writeToStream(LASER, "%d", "1");
+							writeToStream(LASER2, "%d", "1");
+							writeToStream(PWM, "%d", "510204"); 
+							usleep(50000);
+						} else 
 							printf("Fire is disabled!\n");
 						break;
 					case BRAKE :
 						brake_full(m0,m1);
 						break;
-						
 				}
 				if (action != 5) // Don't care about storing a fire
 					prevAction = action; // Store this action
+			} else {
+				brake_full(m0, m1);
 			}
 		} else if (action == QUIT) {
 			strcpy(message, "Quitting now \n");

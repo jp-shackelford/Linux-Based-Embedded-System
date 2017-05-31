@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include "BB_Library.c"
 
-#define THRESHOLD 300
+#define THRESHOLD 400
 #define IR_RECEIVER "/sys/devices/ocp.3/helper.15/AIN0"
 #define WAIT_TIME 4
 
@@ -18,7 +18,25 @@ struct sigaction sa;
 int readADC();
 
 
-int main() {
+
+int main(int argc, char* argv[]) {
+	/*
+	pid_t pid;
+	key_t MyKey;
+	pid_t *ShmPTR;
+
+	MyKey   = ftok(".", 's');        
+    pid_t ShmID   = shmget(MyKey, sizeof(pid_t), 0666);
+    ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
+    pid = *ShmPTR;                
+    shmdt(ShmPTR);
+    */
+    
+    int pid = atoi(argv[1]);
+	
+    printf("Sensor PID is %d\n", pid);
+    
+    
 	FILE* slots = getStream("/sys/devices/bone_capemgr.9/slots", "w");
 	writeToStream(slots, "%s", "cape-bone-iio");
 	
@@ -28,34 +46,18 @@ int main() {
 	usleep(1000);
 
 	strtok(analog_path, "\n");
-	strcat(analog_path, "/AIN");
+	strcat(analog_path, "/AIN0");
 
 	fclose(fp);
 
-	pid_t pid;
-	key_t MyKey;
-	pid_t *ShmPTR;
 
-	MyKey   = ftok(".", 's');        
-    pid_t ShmID   = shmget(MyKey, sizeof(pid_t), 0666);
-    
-    //printf("Sensor ShmID is %d\n", ShmID);
-    
-    ShmPTR  = (pid_t *) shmat(ShmID, NULL, 0);
-    pid = *ShmPTR;                
-    shmdt(ShmPTR);
-	
-    printf("Sensor PID is %d\n", pid);
 	
     while(1) {
     	// If reading is ever past threshold
     	if (readADC() < THRESHOLD) {
-    		//printf("%s\n", "above threshold");
     		kill(pid, SIGUSR1); // Send signal to other process
     		while (readADC() < THRESHOLD);
-    		//printf("%s\n", "all clear. Sleeping now");
     		sleep(WAIT_TIME); // Can't get hit again within 2 sec of being hit
-    		//printf("%s\n", "done sleeping");
     	}
     }
 
@@ -68,7 +70,7 @@ int readADC() {
     char buf[64]; 
     char val[4];     //holds up to 4 digits for ADC value  
       
-    fd = open(IR_RECEIVER, O_RDONLY);
+    fd = open(analog_path, O_RDONLY);
     if (fd < 0) {  
         printf("Error: Can't open ADC\n");
         exit(1);

@@ -71,28 +71,43 @@ FILE* initPWM(int pwm) {
 	writeToStream(pwmSet, "%s", "am33xx_pwm");
 	writeToStream(pwmSet, "%s", "bone_pwm_P9_14");
     writeToStream(pwmSet, "%s", "bone_pwm_P8_19"); 
+    writeToStream(pwmSet, "%s", "bone_pwm_P9_42");
     char path[PATH_BUF];
     char p8_path[1024];
     char p9_path[1024]; 
+    char p9_42path[1024];
+    
     FILE* fp;
-    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P8*\" -type d", "r");
+    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P8_19*\" -type d", "r");
     usleep(10000);
     fgets(p8_path, sizeof(p8_path), fp);
     usleep(10000); 
-    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P9*\" -type d", "r");
+    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P9_14*\" -type d", "r");
     usleep(10000);
     usleep(1000); 
     fgets(p9_path, sizeof(p9_path), fp);
     usleep(10000); 
+    usleep(10000); 
+    fp = popen("/usr/bin/find /sys/devices/ocp.3/ -name \"pwm_test_P9_42*\" -type d", "r");
+    usleep(10000);
+    usleep(1000); 
+    fgets(p9_42path, sizeof(p9_42path), fp);
+    printf("%s\n", p9_42path); 
+    usleep(10000); 
+    
     strtok(p8_path, "\n");
-    strtok(p9_path, "\n"); 
+    strtok(p9_path, "\n");
+    strtok(p9_42path, "\n"); 
     strcat(p9_path, "/");
     strcat(p8_path, "/");
+    strcat(p9_42path, "/"); 
     // if path == 1, use EHRPWM2A
-    if(pwm) {
+    if(pwm == 1) {
         sprintf(path, "%s", p8_path);
-    } else { // path == 0 use EHRPWM1A
+    } else if(pwm == 0) { // path == 0 use EHRPWM1A
         sprintf(path, "%s", p9_path); 
+    } else {
+    	sprintf(path, "%s", p9_42path);
     }
     char ppath[PATH_BUF];
     char dpath[PATH_BUF];
@@ -102,10 +117,10 @@ FILE* initPWM(int pwm) {
     sprintf(epath, "%s%s", path, "run");
 	FILE* period = getStream(ppath, "w");
     writeToStream(period, "%d", "1020408"); //Set Frequency to 980Hz
-	FILE* duty =  getStream(dpath, "w");
+    FILE* duty =  getStream(dpath, "w");
 	writeToStream(duty, "%d", "510204"); // intialize to 50% duty cycle  
 	FILE* enable = getStream(epath, "w");
-	writeToStream(enable, "%d", "1"); 
+	writeToStream(enable, "%d", "1");  
     return duty; 
 }
 

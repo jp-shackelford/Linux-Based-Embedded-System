@@ -12,11 +12,6 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 
-
-#define LEFT  68
-#define DOWN  66
-#define RIGHT 67
-#define UP    65
 #define CAP   5
 #define FORWARD 1
 #define BACKWARD 2

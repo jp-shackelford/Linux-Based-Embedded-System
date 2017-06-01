@@ -1,3 +1,22 @@
+Lab 5 - EE 474 <br />
+For this final lab project, we created a "battle bots" game, similar to laser tag. <br />
+This project makes use of an infrared receiver, for hit detection, and an IR emitter, <br />
+for firing. The Sharp proximity sensor provided in the lab kit was used as the emitter <br />
+since the sensors send out infrared beams, intended for distance sensing. <br />
+<br />
+Control of the tank is accomplished using the BlueSmirf Bluetooth chip provided. <br />
+A graphical user interface (GUI) was written to interface with the Bluetooth module. <br />
+This GUI contains commands for driving the tank motors, as well as firing the laser. <br />
+<br />
+A startup script was written for the BeagleBone Black, which allows the user to simply <br />
+power on the board to start the game. A tone will play when the program is done <br />
+initializing, indicating that the game can begin. To connect the controller device, <br />
+simply run the GUI. This will automatically connect with the Bluetooth module on the tank <br />
+and allow the user to begin issuing commands.
+<br />
+<br />
+<br />
+<br />
 Lab 4 - EE 474 <br />
 In this lab we implemented proximity sensors to direct the patterns of our <br />
 robo-tank's driving. The motors of the tank were driven by an H-bridge chip wired <br />

@@ -1,8 +1,4 @@
-/* Code Written by Roy Pe'er. I've explained all the code in the grey comments.
-I recommend you to go over the code, examine it, play with it, improve it and modify it according to your needs. 
-For more awesome tutorials, subsrice to my channel:
-http://www.youtube.com/subscription_center?add_user=Roypeer1
-*/
+// EE 474 - Beagle Bone Black Tank Driver GUI
 
 import processing.serial.*; //Importing the Serial library.
 Serial myPort; // Creating a port variable.

@@ -8,7 +8,7 @@ FILE* HIT_LED;
 FILE* LASER;
 FILE* LASER2;
 FILE* PWM; 
-int firedisable;
+int firedisable = 0;
 int lives = 3;
 
 void endgame() {
@@ -73,7 +73,7 @@ void handler(int sig) {
 			strcpy(message, "HIT! Fire is temporarily disabled\n");
 			printf(message);
 			write(fd, message, strlen(message));
-			alarm(1); // Set 1 second timer that will disable our fire button
+			alarm(2); // Set 2 second timer that will disable our fire button
 		}
 
 	} else if (sig == SIGALRM) {
